@@ -1,0 +1,373 @@
+-- ============================================================
+-- MINTAADATOK
+-- ============================================================
+
+-- ============================================================
+-- USERS
+-- ============================================================
+
+INSERT INTO users
+(userId, firstName, lastName, userName, email, password, role, status)
+VALUES
+(1, 'Bence', 'Nagy', 'bence_nagy', 'bence.nagy@example.com', 'Test1234!', 'USER', 1),
+(2, 'Anna', 'Kovacs', 'anna_kovacs', 'anna.kovacs@example.com', 'Test1234!', 'USER', 1),
+(3, 'David', 'Szabo', 'david_szabo', 'david.szabo@example.com', 'Test1234!', 'USER', 1),
+(4, 'Eszter', 'Toth', 'eszter_toth', 'eszter.toth@example.com', 'Test1234!', 'USER', 1),
+(5, 'Mate', 'Horvath', 'mate_horvath', 'mate.horvath@example.com', 'Test1234!', 'USER', 1),
+(6, 'Lilla', 'Varga', 'lilla_varga', 'lilla.varga@example.com', 'Test1234!', 'USER', 1),
+(7, 'Adam', 'Kiss', 'adam_kiss', 'adam.kiss@example.com', 'Test1234!', 'USER', 1),
+(8, 'Zsofia', 'Molnar', 'zsofia_molnar', 'zsofia.molnar@example.com', 'Test1234!', 'USER', 1),
+(9, 'Peter', 'Nemet', 'peter_nemet', 'peter.nemet@example.com', 'Test1234!', 'USER', 1),
+(10, 'Reka', 'Farkas', 'reka_farkas', 'reka.farkas@example.com', 'Test1234!', 'USER', 1),
+(11, 'Gabor', 'Balogh', 'gabor_balogh', 'gabor.balogh@example.com', 'Test1234!', 'ADMIN', 1),
+(12, 'Nora', 'Lakatos', 'nora_lakatos', 'nora.lakatos@example.com', 'Test1234!', 'USER', 1),
+(13, 'Mark', 'Papp', 'mark_papp', 'mark.papp@example.com', 'Test1234!', 'USER', 1),
+(14, 'Julianna', 'Simon', 'julianna_simon', 'julianna.simon@example.com', 'Test1234!', 'USER', 0),
+(15, 'Tamas', 'Biro', 'tamas_biro', 'tamas.biro@example.com', 'Test1234!', 'MODERATOR', 1);
+
+
+-- ============================================================
+-- CLUBS
+-- ============================================================
+
+INSERT INTO clubs
+(clubId, name, description, email, phone, websiteURL, logoURL,
+ rating, reviewCount, address, zipCode, city)
+VALUES
+(1,
+ 'Budapest Fitness Club',
+ 'Modern fitness center Budapest belvarosaban, konditermi es csoportos edzesekkel.',
+ 'info@budapestfitness.example.com',
+ '+36-1-555-1001',
+ 'https://example.com/budapest-fitness',
+ 'https://example.com/logos/budapest-fitness.png',
+ 4.7, 128,
+ 'Vaci ut 25.',
+ 1132,
+ 'Budapest'),
+
+(2,
+ 'Danube Yoga Studio',
+ 'Yoga studio kezdoknek es haladoknak, kulonbozo stilusokkal es oktatokkal.',
+ 'hello@danubeyoga.example.com',
+ '+36-1-555-1002',
+ 'https://example.com/danube-yoga',
+ 'https://example.com/logos/danube-yoga.png',
+ 4.9, 96,
+ 'Bem rakpart 18.',
+ 1011,
+ 'Budapest'),
+
+(3,
+ 'City Boxing Club',
+ 'Boxing edzesek minden korosztalynak, kezdotol versenyzoi szintig.',
+ 'info@cityboxing.example.com',
+ '+36-1-555-1003',
+ 'https://example.com/city-boxing',
+ 'https://example.com/logos/city-boxing.png',
+ 4.6, 84,
+ 'Dozsa Gyorgy ut 44.',
+ 1146,
+ 'Budapest'),
+
+(4,
+ 'Balaton Tennis Center',
+ 'Teniszkozpont palyaberlesi lehetoseggel, oktatassal es versenyekkel.',
+ 'contact@balatontennis.example.com',
+ '+36-87-555-1004',
+ 'https://example.com/balaton-tennis',
+ 'https://example.com/logos/balaton-tennis.png',
+ 4.8, 72,
+ 'Sport utca 7.',
+ 8230,
+ 'Balatonfured'),
+
+(5,
+ 'Debrecen Running Club',
+ 'Futokozosseg rendszeres kozos futasokkal es edzestervekkel.',
+ 'info@debrecenrunning.example.com',
+ '+36-52-555-1005',
+ 'https://example.com/debrecen-running',
+ 'https://example.com/logos/debrecen-running.png',
+ 4.5, 61,
+ 'Nagyerdei korut 12.',
+ 4032,
+ 'Debrecen'),
+
+(6,
+ 'Szeged Climbing Hall',
+ 'Maszoterem kezdoknek es tapasztalt maszoiknak, boulder es koteles falakkal.',
+ 'hello@szegedclimbing.example.com',
+ '+36-62-555-1006',
+ 'https://example.com/szeged-climbing',
+ 'https://example.com/logos/szeged-climbing.png',
+ 4.7, 53,
+ 'Kossuth Lajos sugarut 31.',
+ 6720,
+ 'Szeged'),
+
+(7,
+ 'Pecs Swimming Academy',
+ 'Uszoda es uszooktatas gyermekeknek, felnottnek es versenyzoknek.',
+ 'info@pecsswimming.example.com',
+ '+36-72-555-1007',
+ 'https://example.com/pecs-swimming',
+ 'https://example.com/logos/pecs-swimming.png',
+ 4.8, 88,
+ 'Uszoda utca 4.',
+ 7621,
+ 'Pecs'),
+
+(8,
+ 'Győr Cycling Club',
+ 'Kerekparos klub varosi, orszaguti es terep kerekparozashoz.',
+ 'info@gyorcycling.example.com',
+ '+36-96-555-1008',
+ 'https://example.com/gyor-cycling',
+ 'https://example.com/logos/gyor-cycling.png',
+ 4.6, 47,
+ 'Baross ut 15.',
+ 9021,
+ 'Gyor'),
+
+(9,
+ 'Miskolc Martial Arts',
+ 'Harcmuveszeti klub karate, judo es onvedelmi edzesekkel.',
+ 'info@miskolcmartial.example.com',
+ '+36-46-555-1009',
+ 'https://example.com/miskolc-martial',
+ 'https://example.com/logos/miskolc-martial.png',
+ 4.7, 69,
+ 'Szentpali ut 8.',
+ 3525,
+ 'Miskolc'),
+
+(10,
+ 'Veszprem Dance Studio',
+ 'Tancstudio modern, latin es tarsastanc oktatassal minden szinten.',
+ 'hello@veszpremdance.example.com',
+ '+36-88-555-1010',
+ 'https://example.com/veszprem-dance',
+ 'https://example.com/logos/veszprem-dance.png',
+ 4.9, 105,
+ 'Kossuth utca 22.',
+ 8200,
+ 'Veszprem'),
+
+(11,
+ 'Budapest Basketball Academy',
+ 'Kosarlabda akademia utanpotlas es felnott csapatokkal.',
+ 'info@budapestbasketball.example.com',
+ '+36-1-555-1011',
+ 'https://example.com/budapest-basketball',
+ 'https://example.com/logos/budapest-basketball.png',
+ 4.5, 39,
+ 'Egressy ut 88.',
+ 1149,
+ 'Budapest'),
+
+(12,
+ 'Balaton Outdoor Club',
+ 'Szabadteri sportok, turazas, kajakozas es csaladi programok.',
+ 'info@balatonoutdoor.example.com',
+ '+36-84-555-1012',
+ 'https://example.com/balaton-outdoor',
+ 'https://example.com/logos/balaton-outdoor.png',
+ 4.8, 57,
+ 'Fo utca 10.',
+ 8621,
+ 'Zamardi');
+
+
+-- ============================================================
+-- CATEGORIES
+-- ============================================================
+
+INSERT INTO categories
+(categoryId, name, parentId)
+VALUES
+(1, 'Fitness', NULL),
+(2, 'Yoga', NULL),
+(3, 'Harcmuveszet', NULL),
+(4, 'Labdajatekok', NULL),
+(5, 'Vizisport', NULL),
+(6, 'Kuzdosport', 3),
+(7, 'Csapatsport', 4),
+(8, 'Kerekparozas', NULL),
+(9, 'Tanc', NULL),
+(10, 'Szabadteri sport', NULL),
+(11, 'Futas', 10),
+(12, 'Maszas', 10),
+(13, 'Tenisz', NULL),
+(14, 'Uszas', 5);
+
+
+-- ============================================================
+-- CLUB CATEGORIES
+-- ============================================================
+
+INSERT INTO clubCategories
+(categories_categoryId, clubs_clubId)
+VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(6, 3),
+(13, 4),
+(10, 5),
+(11, 5),
+(10, 6),
+(12, 6),
+(5, 7),
+(14, 7),
+(8, 8),
+(3, 9),
+(6, 9),
+(9, 10),
+(4, 11),
+(7, 11),
+(5, 12),
+(10, 12);
+
+
+-- ============================================================
+-- PRICE
+-- ============================================================
+
+INSERT INTO price
+(priceId, adult, student, clubs_clubId)
+VALUES
+(1, 3500, 2800, 1),
+(2, 3000, 2400, 2),
+(3, 3200, 2500, 3),
+(4, 4000, 3200, 4),
+(5, 1500, 1000, 5),
+(6, 2800, 2200, 6),
+(7, 2500, 1800, 7),
+(8, 1800, 1200, 8),
+(9, 3000, 2300, 9),
+(10, 2800, 2000, 10),
+(11, 2200, 1600, 11),
+(12, 2500, 1800, 12);
+
+
+-- ============================================================
+-- REVIEWS
+-- ============================================================
+
+INSERT INTO reviews
+(reviewId, rating, comment, createdAt, users_userId, clubs_clubId)
+VALUES
+(1, 5.0, 'Nagyon jo terem, tiszta es jol felszerelt.', '2026-01-10', 1, 1),
+(2, 4.5, 'Jo gepek es segitokesz edzok.', '2026-01-18', 2, 1),
+(3, 5.0, 'Nagyon kellemes hangulat es profi oktatok.', '2026-02-03', 3, 2),
+(4, 4.5, 'Kezdokent is nagyon jo elmeny volt.', '2026-02-14', 4, 2),
+(5, 4.0, 'Jo edzesek, a terem neha kicsit zsufolt.', '2026-02-20', 5, 3),
+(6, 5.0, 'Nagyszeru edzok es jo kozosseg.', '2026-03-01', 6, 3),
+(7, 5.0, 'A palyak nagyon jo allapotban vannak.', '2026-03-05', 7, 4),
+(8, 4.5, 'Kedves szemelyzet es szep kornyezet.', '2026-03-12', 8, 4),
+(9, 4.5, 'Jo kozosseg, rendszeres programok.', '2026-03-20', 9, 5),
+(10, 5.0, 'Nagyon jo futasok, jo szervezes.', '2026-03-28', 10, 5),
+(11, 5.0, 'Szuper maszohely, sokfele utvonal.', '2026-04-02', 11, 6),
+(12, 4.5, 'Kezdoknek is ajanlom.', '2026-04-09', 12, 6),
+(13, 4.5, 'Tiszta uszoda es jo oktatok.', '2026-04-15', 13, 7),
+(14, 5.0, 'A gyerekek nagyon szeretik az edzeseket.', '2026-04-21', 14, 7),
+(15, 4.0, 'Jo utak es jo tarsasag.', '2026-05-01', 15, 8),
+(16, 4.5, 'Nagyon jo hetvegi programok.', '2026-05-08', 1, 8),
+(17, 5.0, 'Az oktatok felkeszultek es segitokeszek.', '2026-05-15', 2, 9),
+(18, 4.5, 'Jo hangulat es valtozatos edzesek.', '2026-05-21', 3, 9),
+(19, 5.0, 'Nagyon jo tanciskola, sokfele ora.', '2026-06-01', 4, 10),
+(20, 5.0, 'Profi tanarok es kellemes hangulat.', '2026-06-08', 5, 10),
+(21, 4.5, 'Jo edzesek es jo csapat.', '2026-06-15', 6, 11),
+(22, 4.0, 'Az edzesek jok, de a palya lehetne nagyobb.', '2026-06-20', 7, 11),
+(23, 5.0, 'Nagyon jo csaladi program.', '2026-07-01', 8, 12),
+(24, 4.5, 'Szep kornyezet es jo szervezes.', '2026-07-08', 9, 12),
+(25, 5.0, 'Minden alkalommal nagyon jol ereztem magam.', '2026-07-15', 10, 1);
+
+
+-- ============================================================
+-- MESSAGES
+-- ============================================================
+
+INSERT INTO messages
+(messageId, categoryId, chatType, message, createdAt, users_userId, clubs_clubId)
+VALUES
+(1, 1, 'GENERAL', 'Sziasztok! Erdeklodni szeretnek a berletekrol.', '2026-01-05 10:15:00', 1, 1),
+(2, 1, 'GENERAL', 'Szia Bence! A havi berletunk jelenleg 3500 Ft-tol indul.', '2026-01-05 11:00:00', 11, 1),
+(3, 2, 'GENERAL', 'Van lehetoseg kezdo yoga oran reszt venni?', '2026-01-12 09:20:00', 2, 2),
+(4, 2, 'GENERAL', 'Termeszetesen, minden hetfon es szerdan van kezdo ora.', '2026-01-12 10:05:00', 12, 2),
+(5, 3, 'GENERAL', 'Hany eves kortol lehet boxing edzesre jarni?', '2026-02-01 16:30:00', 3, 3),
+(6, 3, 'GENERAL', 'Tizennegy eves kortol varjuk a fiatalokat.', '2026-02-01 17:10:00', 15, 3),
+(7, 13, 'GENERAL', 'Lehet palyat elore foglalni?', '2026-02-10 13:15:00', 4, 4),
+(8, 13, 'GENERAL', 'Igen, telefonon vagy a weboldalon keresztul is.', '2026-02-10 13:45:00', 4, 4),
+(9, 11, 'GENERAL', 'Mikor indul a kovetkezo kozos futas?', '2026-03-01 08:10:00', 5, 5),
+(10, 11, 'GENERAL', 'Vasarnap reggel 9 orakor indulunk.', '2026-03-01 08:30:00', 11, 5),
+(11, 12, 'GENERAL', 'Kell sajat felszereles a maszashez?', '2026-03-10 15:20:00', 6, 6),
+(12, 12, 'GENERAL', 'Kezdoknek tudunk teljes felszerelest biztositani.', '2026-03-10 16:00:00', 13, 6),
+(13, 14, 'GENERAL', 'Van gyermek uszooktatas is?', '2026-03-20 12:00:00', 7, 7),
+(14, 14, 'GENERAL', 'Igen, hat eves kortol indulnak csoportjaink.', '2026-03-20 12:35:00', 15, 7),
+(15, 8, 'GENERAL', 'Szerveztek hosszabb hetvegi kerekparturakat?', '2026-04-01 18:10:00', 8, 8),
+(16, 8, 'GENERAL', 'Havonta egyszer szervezunk hosszabb turat.', '2026-04-01 19:00:00', 11, 8),
+(17, 6, 'GENERAL', 'Van kezdo judo csoport?', '2026-04-15 14:30:00', 9, 9),
+(18, 6, 'GENERAL', 'Igen, kedden es csutortokon vannak edzesek.', '2026-04-15 15:05:00', 15, 9),
+(19, 9, 'GENERAL', 'Milyen tancokat lehet tanulni?', '2026-05-01 17:20:00', 10, 10),
+(20, 9, 'GENERAL', 'Latin, standard es modern tancokat is oktatunk.', '2026-05-01 18:00:00', 12, 10);
+
+
+-- ============================================================
+-- ELLENORZO LEKERDEZESEK
+-- ============================================================
+
+-- Felhasznalok
+SELECT * FROM users;
+
+-- Klubok
+SELECT * FROM clubs;
+
+-- Kategoriak
+SELECT * FROM categories;
+
+-- Klubok kategoriakkal
+SELECT
+    c.name AS clubName,
+    cat.name AS categoryName
+FROM clubs c
+JOIN clubCategories cc
+    ON c.clubId = cc.clubs_clubId
+JOIN categories cat
+    ON cat.categoryId = cc.categories_categoryId
+ORDER BY c.name;
+
+-- Klubok es araik
+SELECT
+    c.name AS clubName,
+    p.adult,
+    p.student
+FROM clubs c
+JOIN price p
+    ON c.clubId = p.clubs_clubId
+ORDER BY c.name;
+
+-- Ertekelesek klubonkent
+SELECT
+    c.name AS clubName,
+    r.rating,
+    r.comment,
+    r.createdAt
+FROM reviews r
+JOIN clubs c
+    ON c.clubId = r.clubs_clubId
+ORDER BY c.name, r.createdAt;
+
+-- Uzenetek klubonkent
+SELECT
+    c.name AS clubName,
+    u.userName,
+    m.message,
+    m.createdAt
+FROM messages m
+JOIN users u
+    ON u.userId = m.users_userId
+JOIN clubs c
+    ON c.clubId = m.clubs_clubId
+ORDER BY m.createdAt;
