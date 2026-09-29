@@ -1,0 +1,179 @@
+:root {
+  --bg: #edebe6;
+  --panel: #f6f5f1;
+  --green-900: #0d3f39;
+  --green-800: #144f45;
+  --green-700: #1a6a59;
+  --green-200: rgba(255, 255, 255, 0.18);
+  --text: #1d2b2a;
+  --muted: #e7f1ee;
+  --shadow: rgba(8, 30, 26, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.site-header {
+  background: linear-gradient(135deg, var(--green-900) 0%, var(--green-800) 55%, #0d463d 100%);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.topbar,
+.page-title-wrap,
+.content-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 18px;
+  padding-bottom: 10px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.03));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sponsor-badge {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.page-title-wrap {
+  padding-top: 16px;
+  padding-bottom: 42px;
+}
+
+h1 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2.6rem, 5vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  font-weight: 800;
+}
+
+.content-shell {
+  padding-top: 28px;
+  padding-bottom: 60px;
+}
+
+.club-card {
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(13, 63, 57, 0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px var(--shadow);
+}
+
+.club-image {
+  height: 200px;
+  background: linear-gradient(135deg, rgba(17, 64, 58, 0.15), rgba(17, 64, 58, 0.02)),
+    linear-gradient(140deg, #dfe9e4 0%, #b8cfc8 28%, #92a9a2 100%);
+}
+
+.club-info {
+  padding: 22px 20px 18px;
+}
+
+.club-info h2 {
+  margin: 0 0 8px;
+  font-size: clamp(1.6rem, 2vw, 2rem);
+  color: var(--green-900);
+}
+
+.club-info p {
+  margin: 0;
+  color: rgba(29, 43, 42, 0.8);
+  font-size: 1rem;
+}
+
+.club-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.club-actions a {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--green-900);
+  background: rgba(17, 64, 58, 0.08);
+  transition: 0.2s ease;
+}
+
+.club-actions a:hover {
+  background: rgba(17, 64, 58, 0.14);
+}
+
+@media (max-width: 640px) {
+  .topbar,
+  .page-title-wrap,
+  .content-shell {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .brand {
+    font-size: 0.9rem;
+  }
+
+  .sponsor-badge {
+    font-size: 0.62rem;
+  }
+
+  .page-title-wrap {
+    padding-bottom: 30px;
+  }
+}
