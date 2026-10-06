@@ -462,7 +462,7 @@ h1 {
 
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -504,6 +504,38 @@ h1 {
 
 .category-outdoor {
   background-image: url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80");
+}
+
+.category-fitness {
+  background-image: url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80");
+}
+
+.category-yoga {
+  background-image: url("https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80");
+}
+
+.category-martial {
+  background-image: url("https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=800&q=80");
+}
+
+.category-ballgames {
+  background-image: url("https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80");
+}
+
+.category-water {
+  background-image: url("https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80");
+}
+
+.category-cycling {
+  background-image: url("https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=80");
+}
+
+.category-dance {
+  background-image: url("https://images.unsplash.com/photo-1504609813442-a8924e83f76e?auto=format&fit=crop&w=800&q=80");
+}
+
+.category-tennis {
+  background-image: url("https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=800&q=80");
 }
 
 .category-movement {
@@ -869,6 +901,325 @@ h1 {
 
 .club-actions a:hover {
   background: rgba(17, 64, 58, 0.14);
+}
+
+.page-title-link {
+  color: #fff;
+  text-decoration: none;
+}
+
+.site-name {
+  color: #fff;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 64px;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.clubs-page-intro {
+  padding-top: 64px;
+  padding-bottom: 32px;
+}
+
+.clubs-page-intro .section-kicker {
+  margin-bottom: 10px;
+}
+
+.clubs-page-intro h1 {
+  margin: 0;
+  color: var(--green-900);
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(3.5rem, 7vw, 5.5rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+}
+
+.clubs-page-intro > p:last-child {
+  max-width: 580px;
+  margin: 16px 0 0;
+  color: rgba(29, 43, 42, 0.76);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.club-directory {
+  padding-top: 0;
+  padding-bottom: 76px;
+}
+
+.category-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(13, 63, 57, 0.14);
+}
+
+.category-filter-group {
+  position: relative;
+  display: inline-flex;
+}
+
+.category-filter-children {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  display: none;
+  min-width: 100%;
+  gap: 5px;
+  padding: 7px;
+  border: 1px solid rgba(13, 63, 57, 0.12);
+  border-radius: 13px;
+  background: var(--panel);
+  box-shadow: 0 14px 28px rgba(8, 30, 26, 0.18);
+}
+
+.category-filter-children::before {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: 7px;
+  content: "";
+}
+
+.category-filter-group:hover .category-filter-children,
+.category-filter-group:focus-within .category-filter-children {
+  display: grid;
+}
+
+.category-filter-group.has-children > .category-filter-button::after {
+  margin-left: 9px;
+  content: "⌄";
+  font-size: 0.9em;
+}
+
+.category-filter-button {
+  min-height: 40px;
+  width: auto;
+  padding: 0 14px;
+  border: 1px solid rgba(13, 63, 57, 0.14);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--green-900);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+
+.category-filter-all {
+  width: auto;
+}
+
+.category-filter-child {
+  min-height: 38px;
+  width: 100%;
+  padding: 0 13px;
+  color: rgba(13, 63, 57, 0.82);
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+.category-filter-button:hover,
+.category-filter-button:focus-visible {
+  border-color: var(--green-700);
+  background: rgba(26, 106, 89, 0.08);
+}
+
+.category-filter-button.is-active {
+  border-color: var(--green-900);
+  background: var(--green-900);
+  color: #fff;
+}
+
+.club-results-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 36px 0 18px;
+}
+
+.club-results-heading h2 {
+  margin: 0;
+  color: var(--green-900);
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.club-results-heading p {
+  margin: 0 0 5px;
+  color: rgba(29, 43, 42, 0.68);
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.club-listing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.directory-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(13, 63, 57, 0.08);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 12px 30px rgba(8, 30, 26, 0.08);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.directory-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 34px rgba(8, 30, 26, 0.14);
+}
+
+.directory-card[hidden] {
+  display: none;
+}
+
+.directory-card > img {
+  width: 100%;
+  height: 205px;
+  object-fit: cover;
+  background: #d9e2dc;
+}
+
+.directory-card-content {
+  padding: 20px;
+}
+
+.directory-card-category {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(26, 106, 89, 0.1);
+  color: var(--green-800);
+  font-size: 0.69rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.directory-card h3 {
+  margin: 13px 0 8px;
+  color: var(--green-900);
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.directory-card-description {
+  min-height: 3.2em;
+  margin: 0;
+  color: rgba(29, 43, 42, 0.76);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.directory-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(13, 63, 57, 0.1);
+  color: rgba(29, 43, 42, 0.68);
+  font-size: 0.75rem;
+}
+
+.club-rating {
+  flex: 0 0 auto;
+  color: var(--green-800);
+  font-weight: 800;
+}
+
+.club-empty-state {
+  margin: 24px 0 0;
+  padding: 30px;
+  border: 1px dashed rgba(13, 63, 57, 0.25);
+  border-radius: 16px;
+  color: rgba(29, 43, 42, 0.75);
+  text-align: center;
+}
+
+.club-empty-state[hidden] {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .club-listing-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .site-name {
+    font-size: 48px;
+  }
+
+  .clubs-page-intro {
+    padding-top: 44px;
+    padding-bottom: 26px;
+  }
+
+  .club-directory {
+    padding-bottom: 54px;
+  }
+
+  .category-filter {
+    gap: 7px;
+    padding: 10px 0;
+  }
+
+  .category-filter-button {
+    min-height: 38px;
+    padding: 0 11px;
+    font-size: 0.78rem;
+  }
+
+  .category-filter-child {
+    min-height: 36px;
+    padding: 0 11px;
+    font-size: 0.75rem;
+  }
+
+  .club-results-heading {
+    margin-top: 28px;
+  }
+
+  .directory-card > img {
+    height: 180px;
+  }
+
+  .directory-card-content {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 520px) {
+  .club-listing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .directory-card > img {
+    height: 210px;
+  }
+
+  .directory-card-description {
+    min-height: 0;
+  }
 }
 
 .chat-bubble {

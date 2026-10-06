@@ -2,7 +2,7 @@ const chatButton = document.querySelector(".chat-bubble");
 const chatPopup = document.querySelector("#chat-popup");
 const chatCloseButton = document.querySelector(".chat-popup-close");
 
-chatButton.addEventListener("click", () => {
+chatButton?.addEventListener("click", () => {
   if (chatPopup.open) {
     chatPopup.close();
   } else {
@@ -11,16 +11,16 @@ chatButton.addEventListener("click", () => {
   }
 });
 
-chatCloseButton.addEventListener("click", () => chatPopup.close());
+chatCloseButton?.addEventListener("click", () => chatPopup.close());
 
-chatPopup.addEventListener("close", () => {
+chatPopup?.addEventListener("close", () => {
   chatButton.setAttribute("aria-expanded", "false");
   chatButton.focus();
 });
 
 document.addEventListener("pointerdown", (event) => {
   if (
-    chatPopup.open &&
+    chatPopup?.open &&
     !chatPopup.contains(event.target) &&
     !chatButton.contains(event.target)
   ) {
@@ -35,14 +35,14 @@ const mobileHeaderQuery = window.matchMedia(
 );
 
 const syncHeaderForViewport = () => {
-  if (!mobileHeaderQuery.matches) {
+  if (!mobileHeaderQuery.matches && siteHeader && headerToggle) {
     siteHeader.classList.remove("is-collapsed");
     headerToggle.setAttribute("aria-expanded", "true");
     headerToggle.setAttribute("aria-label", "Fejléc összecsukása");
   }
 };
 
-headerToggle.addEventListener("click", () => {
+headerToggle?.addEventListener("click", () => {
   const isExpanded = headerToggle.getAttribute("aria-expanded") === "true";
   headerToggle.setAttribute("aria-expanded", String(!isExpanded));
   headerToggle.setAttribute("aria-label", isExpanded ? "Fejléc kibontása" : "Fejléc összecsukása");
@@ -50,6 +50,77 @@ headerToggle.addEventListener("click", () => {
 });
 
 mobileHeaderQuery.addEventListener("change", syncHeaderForViewport);
+
+const categoryFilters = [...document.querySelectorAll("[data-category-filter]")];
+
+if (categoryFilters.length) {
+  const clubCards = [...document.querySelectorAll("[data-club-listing] [data-category]")];
+  const resultCount = document.querySelector("[data-results-count]");
+  const resultsTitle = document.querySelector("[data-results-title]");
+  const emptyState = document.querySelector("[data-empty-state]");
+  const categoryNames = {
+    all: "Minden klub",
+    1: "Fitness",
+    2: "Yoga",
+    3: "Harcművészet",
+    4: "Labdajátékok",
+    5: "Vízisport",
+    6: "Küzdősport",
+    7: "Csapatsport",
+    8: "Kerékpározás",
+    9: "Tánc",
+    10: "Szabadtéri sport",
+    11: "Futás",
+    12: "Mászás",
+    13: "Tenisz",
+    14: "Úszás",
+  };
+  const categoryParents = { 6: "3", 7: "4", 11: "10", 12: "10", 14: "5" };
+
+  const belongsToCategory = (itemCategory, selectedCategory) => {
+    let category = itemCategory;
+    while (category) {
+      if (category === selectedCategory) return true;
+      category = categoryParents[category];
+    }
+    return false;
+  };
+
+  const applyCategory = (category) => {
+    const activeCategory = Object.hasOwn(categoryNames, category) ? category : "all";
+    let visibleCount = 0;
+
+    clubCards.forEach((card) => {
+      const isVisible = activeCategory === "all" || belongsToCategory(card.dataset.category, activeCategory);
+      card.hidden = !isVisible;
+      if (isVisible) visibleCount += 1;
+    });
+
+    categoryFilters.forEach((button) => {
+      const isActive = button.dataset.categoryFilter === activeCategory;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+
+    resultCount.textContent = String(visibleCount);
+    resultsTitle.textContent = activeCategory === "all" ? categoryNames.all : `${categoryNames[activeCategory]} klubok`;
+    emptyState.hidden = visibleCount !== 0;
+    const url = new URL(window.location.href);
+    if (activeCategory === "all") {
+      url.searchParams.delete("category");
+    } else {
+      url.searchParams.set("category", activeCategory);
+    }
+    window.history.replaceState({}, "", url);
+  };
+
+  categoryFilters.forEach((button) => {
+    button.addEventListener("click", () => applyCategory(button.dataset.categoryFilter));
+  });
+
+  const initialCategory = new URLSearchParams(window.location.search).get("category") || "all";
+  applyCategory(initialCategory);
+}
 
 const hero = document.querySelector(".hero");
 
