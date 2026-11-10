@@ -1,0 +1,27 @@
+{
+  "name": "hobby-catalog",
+  "version": "1.0.0",
+  "description": "Alap koncepcióként egy weboldalt képzeltünk el, ahol különböző sport, kulturális és szociális egyesületek feltölthetik elérhetőségeiket, weboldalaikat, áraikat és értékeléseiket, valamint egy bemutatkozást magukról, a számukra létrehozott felületen. Miután az adatbázisunkat feltöltöttük ezekkel az adatokkal (a továbbiakban is bővíthető lesz), elérhető lesz a felhasználók számára is, akik érdeklődésük alapján megtalálhatják a hozzájuk legközelebb eső, vagy legjobban értékelt klubbokat.\r A platform célja, hogy minden ember megtalálhassa a számára kedves tevékenységet kategóriákra bontva, anélkül, hogy egy egész napos keresésbe teljen, mindezt saját pénztárcájukhoz és szabadidejükhöz mérve.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bubika36/Hobby-catalog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bubika36/Hobby-catalog/issues"
+  },
+  "homepage": "https://github.com/bubika36/Hobby-catalog#readme",
+  "dependencies": {
+    "express": "^5.3.0",
+    "mysql2": "^3.24.6",
+    "nodemon": "^3.1.14"
+  }
+}
