@@ -125,7 +125,7 @@ if (hero) {
    "Összes klub" subpage (hash route: #osszes-klub)
    ============================================================ */
 
-// Hardcoded copy of the `categories` table in Adatok.txt (categoryId, name, parentId).
+// Hardcoded copy of the `categories` table in hobby_catalog.sql (categoryId, name, parentId).
 // TODO: replace with an API call once the backend exists.
 const categories = [
   // Fő kategóriák

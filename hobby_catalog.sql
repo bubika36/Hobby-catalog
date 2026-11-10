@@ -1,0 +1,2046 @@
+-- ============================================================
+-- HOBBY CATALOG - adatbazis, tablak es mintaadatok
+-- ============================================================
+
+CREATE DATABASE IF NOT EXISTS hobby_catalog
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_hungarian_ci;
+
+USE hobby_catalog;
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ============================================================
+-- TABLAK
+-- ============================================================
+
+DROP TABLE IF EXISTS users ;
+CREATE TABLE IF NOT EXISTS users (
+userId INT NOT NULL,
+firstName VARCHAR(100) CHARACTER SET 'utf8' NOT NULL,
+lastName VARCHAR(100) CHARACTER SET 'utf8' NOT NULL,
+userName VARCHAR(30) CHARACTER SET 'utf8' NOT NULL,
+email VARCHAR(254) NOT NULL,
+password VARCHAR(255) NOT NULL,
+role VARCHAR(15) NOT NULL,
+status TINYINT NOT NULL,
+PRIMARY KEY (userId),
+UNIQUE INDEX userName_UNIQUE (userName ASC),
+UNIQUE INDEX email_UNIQUE (email ASC)
+) ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS clubs ;
+CREATE TABLE IF NOT EXISTS clubs (
+clubId INT NOT NULL,
+name VARCHAR(150) NOT NULL,
+description LONGTEXT NOT NULL,
+email VARCHAR(254) NOT NULL,
+phone VARCHAR(30) NOT NULL,
+websiteURL VARCHAR(2048) NOT NULL,
+logoURL VARCHAR(2048) NOT NULL,
+rating DECIMAL(2,1) NOT NULL,
+reviewCount INT NULL,
+address VARCHAR(254) NOT NULL,
+zipCode INT NOT NULL,
+city VARCHAR(254) NOT NULL,
+PRIMARY KEY (clubId),
+UNIQUE INDEX name_UNIQUE (name ASC),
+UNIQUE INDEX email_UNIQUE (email ASC),
+UNIQUE INDEX phone_UNIQUE (phone ASC)
+) ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS categories ;
+CREATE TABLE IF NOT EXISTS categories (
+categoryId INT NOT NULL,
+name VARCHAR(45) NOT NULL,
+parentId INT NULL,
+PRIMARY KEY (categoryId),
+UNIQUE INDEX name_UNIQUE (name ASC)
+) ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS clubCategories ;
+CREATE TABLE IF NOT EXISTS clubCategories (
+categories_categoryId INT NOT NULL,
+clubs_clubId INT NOT NULL,
+INDEX fk_clubCategories_categories1_idx (categories_categoryId ASC),
+INDEX fk_clubCategories_clubs1_idx (clubs_clubId ASC),
+CONSTRAINT fk_clubCategories_categories1
+FOREIGN KEY (categories_categoryId)
+REFERENCES categories (categoryId)
+ON DELETE NO ACTION ON UPDATE NO ACTION,
+CONSTRAINT fk_clubCategories_clubs1
+FOREIGN KEY (clubs_clubId)
+REFERENCES clubs (clubId)
+ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS messages ;
+CREATE TABLE IF NOT EXISTS messages (
+messageId INT NOT NULL,
+categoryId INT NOT NULL,
+chatType VARCHAR(45) NOT NULL,
+message VARCHAR(2048) NOT NULL,
+createdAt DATETIME NOT NULL,
+users_userId INT NOT NULL,
+clubs_clubId INT NOT NULL,
+PRIMARY KEY (messageId),
+INDEX fk_messages_users1_idx (users_userId ASC),
+INDEX fk_messages_clubs1_idx (clubs_clubId ASC),
+CONSTRAINT fk_messages_users1
+FOREIGN KEY (users_userId)
+REFERENCES users (userId)
+ON DELETE NO ACTION ON UPDATE NO ACTION,
+CONSTRAINT fk_messages_clubs1
+FOREIGN KEY (clubs_clubId)
+REFERENCES clubs (clubId)
+ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS price ;
+CREATE TABLE IF NOT EXISTS price (
+priceId INT NOT NULL,
+adult INT NULL,
+student INT NULL,
+clubs_clubId INT NOT NULL,
+PRIMARY KEY (priceId),
+INDEX fk_price_clubs1_idx (clubs_clubId ASC),
+CONSTRAINT fk_price_clubs1
+FOREIGN KEY (clubs_clubId)
+REFERENCES clubs (clubId)
+ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS reviews ;
+CREATE TABLE IF NOT EXISTS reviews (
+reviewId INT NOT NULL,
+rating DECIMAL(2,1) NOT NULL,
+comment VARCHAR(2048) NOT NULL,
+createdAt DATE NOT NULL,
+users_userId INT NOT NULL,
+clubs_clubId INT NOT NULL,
+PRIMARY KEY (reviewId),
+INDEX fk_reviews_users1_idx (users_userId ASC),
+INDEX fk_reviews_clubs1_idx (clubs_clubId ASC),
+CONSTRAINT fk_reviews_users1
+FOREIGN KEY (users_userId)
+REFERENCES users (userId)
+ON DELETE NO ACTION ON UPDATE NO ACTION,
+CONSTRAINT fk_reviews_clubs1
+FOREIGN KEY (clubs_clubId)
+REFERENCES clubs (clubId)
+ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = InnoDB;
+
+     
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- ============================================================
+-- MINTAADATOK
+-- ============================================================
+
+-- ============================================================
+-- USERS
+-- ============================================================
+
+INSERT INTO users
+(userId, firstName, lastName, userName, email, password, role, status)
+VALUES
+(1, 'Bence', 'Nagy', 'bence_nagy', 'bence.nagy@example.com', 'Test1234!', 'USER', 1),
+(2, 'Anna', 'Kovacs', 'anna_kovacs', 'anna.kovacs@example.com', 'Test1234!', 'USER', 1),
+(3, 'David', 'Szabo', 'david_szabo', 'david.szabo@example.com', 'Test1234!', 'USER', 1),
+(4, 'Eszter', 'Toth', 'eszter_toth', 'eszter.toth@example.com', 'Test1234!', 'USER', 1),
+(5, 'Mate', 'Horvath', 'mate_horvath', 'mate.horvath@example.com', 'Test1234!', 'USER', 1),
+(6, 'Lilla', 'Varga', 'lilla_varga', 'lilla.varga@example.com', 'Test1234!', 'USER', 1),
+(7, 'Adam', 'Kiss', 'adam_kiss', 'adam.kiss@example.com', 'Test1234!', 'USER', 1),
+(8, 'Zsofia', 'Molnar', 'zsofia_molnar', 'zsofia.molnar@example.com', 'Test1234!', 'USER', 1),
+(9, 'Peter', 'Nemet', 'peter_nemet', 'peter.nemet@example.com', 'Test1234!', 'USER', 1),
+(10, 'Reka', 'Farkas', 'reka_farkas', 'reka.farkas@example.com', 'Test1234!', 'USER', 1),
+(11, 'Gabor', 'Balogh', 'gabor_balogh', 'gabor.balogh@example.com', 'Test1234!', 'ADMIN', 1),
+(12, 'Nora', 'Lakatos', 'nora_lakatos', 'nora.lakatos@example.com', 'Test1234!', 'USER', 1),
+(13, 'Mark', 'Papp', 'mark_papp', 'mark.papp@example.com', 'Test1234!', 'USER', 1),
+(14, 'Julianna', 'Simon', 'julianna_simon', 'julianna.simon@example.com', 'Test1234!', 'USER', 0),
+(15, 'Tamas', 'Biro', 'tamas_biro', 'tamas.biro@example.com', 'Test1234!', 'MODERATOR', 1);
+
+
+-- ============================================================
+-- CLUBS
+-- ============================================================
+-- Valos klubok Szekesfehervar 50 km-es korzetebol (2026. novemberi
+-- allapot, a klubok sajat weboldalairol). A rating es reviewCount
+-- a lenti REVIEWS mintaadatokbol szamolt ertek (nem Google-ertekeles).
+
+INSERT INTO clubs
+(clubId, name, description, email, phone, websiteURL, logoURL,
+ rating, reviewCount, address, zipCode, city)
+VALUES
+(1,
+ 'Roy Gym',
+ 'Modern konditerem Szekesfehervaron profi gepparkkal, csoportos orakkal es szemelyi edzessel.',
+ 'roygym2024@gmail.com',
+ '+36-30-491-9340',
+ 'https://roygym.hu',
+ 'https://roygym.hu/og/og-default.jpg',
+ 4.8, 3,
+ 'Budai ut 154.',
+ 8000,
+ 'Szekesfehervar'),
+
+(2,
+ 'Hajnalfeny Joga Studio',
+ 'Joga studio hatha joga, 3D dinamikus joga, gerinctrening, meditacio es kozepiskolasoknak szolo gimis joga orakkal.',
+ 'zsuzsi@hajnalfenyjoga.hu',
+ '+36-20-522-1936',
+ 'https://hajnalfenyjoga.hu',
+ 'https://hajnalfenyjoga.hu/wp-content/uploads/2017/09/1_HajnalfenyJoga_Logo_Yellow_72dpi_RGB.jpg',
+ 4.8, 2,
+ 'Sarlo utca 4. 1/10.',
+ 8000,
+ 'Szekesfehervar'),
+
+(3,
+ 'Caliente TancStudio S.E.',
+ 'Tancstudio es sportegyesulet tarsastanc, latin es modern tanc oktatassal, kezdo felnott tarsastanc tanfolyamokkal.',
+ 'info@caliente.hu',
+ '+36-30-116-0313',
+ 'https://caliente.hu',
+ 'https://caliente.hu/wp-content/uploads/2016/11/ujlogo.png',
+ 4.5, 2,
+ 'Farkasvermi ut 2.',
+ 8000,
+ 'Szekesfehervar'),
+
+(4,
+ 'Kiskut Tenisz Klub',
+ 'Teniszklub hat salakpalyaval (harom vilagitott, harom telen lefedett), online palyafoglalassal es sajat etteremmel.',
+ 'kiskuttenisz.hella@gmail.com',
+ '+36-30-947-3402',
+ 'https://fehervartenisz.hu',
+ 'https://fehervartenisz.hu/wp-content/uploads/2020/02/kiskut-teniszklub-szekesfehervar.jpg',
+ 4.8, 2,
+ 'Kiskut utja 3.',
+ 8000,
+ 'Szekesfehervar'),
+
+(5,
+ 'Alba Regia Atletikai Klub',
+ 'Szekesfehervar atletikai klubja a Bregyo-kozi atletikai kozpontban, utanpotlas es felnott versenyzokkel, futo es gyaloglo szakaggal.',
+ 'arak@arakatletika.hu',
+ '+36-22-501-373',
+ 'https://www.arakatletika.hu',
+ 'https://www.arakatletika.hu/img/logo.png',
+ 4.8, 2,
+ 'Bregyo koz 1.',
+ 8000,
+ 'Szekesfehervar'),
+
+(6,
+ 'Fehervari Sakk Egyesulet',
+ 'Nonprofit sakkegyesulet kezdo es halado csoportokkal, szerdai es penteki foglalkozasokkal, helyi es FIDE-versenyekkel.',
+ 'f.sesakk@gmail.com',
+ '+36-30-257-3106',
+ 'https://www.fehervarisakk.hu',
+ 'https://www.fehervarisakk.hu/images/fse_logo.jpg',
+ 4.8, 2,
+ 'Kiralykut lakonegyed 20.',
+ 8000,
+ 'Szekesfehervar'),
+
+(7,
+ 'Delfin Sportegyesulet',
+ 'Uszoegyesulet kezdo, kozephalado es halado uszotanfolyamokkal es kondicionalo uszassal a Csitary G. Emil Uszodaban.',
+ 'delfinsportegyesulet@t-online.hu',
+ '+36-30-939-3138',
+ 'https://www.delfin-sportegyesulet-uszas.hu',
+ 'https://cdn.prod.website-files.com/62be106bc8b4042c72ca7413/62dfa17945e33dfc90ca2885_delfin-logo.png',
+ 4.8, 2,
+ 'Bartfai utca 6.',
+ 8000,
+ 'Szekesfehervar'),
+
+(8,
+ 'Aranymenes Lovarda',
+ 'Lovarda es lovas oktatasi kozpont Pakozdon gyerekeknek es felnotteknek: futoszaras, kezdo es halado csoportos orak, nyari taborok.',
+ 'info@aranymenes.hu',
+ '+36-20-353-4561',
+ 'https://www.aranymenes.hu',
+ 'https://bdb61f6d78.clvaw-cdnwnd.com/517dad5b83d29b9bae4bc91a2dffd027/200002543-95a0995a0a/Aranym%C3%A9nes_feh%C3%A9r_l%C3%B3.jpeg?ph=bdb61f6d78',
+ 4.8, 2,
+ 'Pakozdmajor 0203/26 hrsz.',
+ 8095,
+ 'Pakozd'),
+
+(9,
+ 'Alba Fehervar',
+ 'Szekesfehervar elsoosztalyu ferfi kosarlabdaklubja utanpotlas csapatokkal.',
+ 'titkarsag@albafehervar.hu',
+ '+36-22-314-442',
+ 'https://www.albakosar.hu',
+ 'https://www.albakosar.hu/_user/logo/type_2/1382430524.jpg',
+ 4.5, 2,
+ 'Gaz utca 19.',
+ 8000,
+ 'Szekesfehervar'),
+
+(10,
+ 'Videoton FC Fehervar',
+ 'Szekesfehervar labdarugoklubja ferfi, noi es utanpotlas csapatokkal.',
+ 'sajto@vidi.hu',
+ '+36-22-379-493',
+ 'https://vidi.hu',
+ 'https://vidi.hu/assets/img/logo-videoton.svg',
+ 5.0, 2,
+ 'Csikvari ut 10.',
+ 8000,
+ 'Szekesfehervar'),
+
+(11,
+ 'DKKA SE',
+ 'Dunamenti Kozponti Kezilabda Akademia Sportegyesulet: noi kezilabda tobb utanpotlas korosztallyal (U14, U16, U18).',
+ 'info@dkkase.hu',
+ '+36-30-625-1027',
+ 'https://dkkase.hu',
+ 'https://dkkase.hu/themes/crt/dkkase-logo.svg',
+ 4.3, 2,
+ 'Eszperanto ut 2-4.',
+ 2400,
+ 'Dunaujvaros'),
+
+(12,
+ 'Csitary G. Emil Uszoda es Strand',
+ 'Varosi uszoda 8 palyas versenymedencevel es tanmedencevel, uszooktatassal, nyaron strandda bovulve.',
+ 'sport@varosgondnoksag.hu',
+ '+36-22-327-655',
+ 'https://www.csitaryuszoda.hu',
+ 'http://www.csitaryuszoda.hu/_upload/news_pic/4_365.jpg',
+ 4.8, 2,
+ 'Meszoly Geza utca',
+ 8000,
+ 'Szekesfehervar'),
+
+(13,
+ 'Erdi Kerekparos es Triatlon Sportegyesulet',
+ 'Az Erdi Kerekparos es Triatlon Sportegyesuletet egy sportszereto barati tarsasag alapitotta meg, akik mar tobb eve egyutt es eredmenyesen versenyeznek. Az egyesulet alapitasa azert fogalmazodott meg bennunk, mert orommel lattuk, hogy varosunk fiatal lakossaga koreben egyre nepszerubb szabadidosport...',
+ 'erdiktse@gmail.com',
+ '+36-30-932-6478',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Erdi_Kerekparos_es_Triatlon_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/kepek/thumbs/3154.jpg',
+ 0.0, 0,
+ 'Csaba utca 56.',
+ 2030,
+ 'Erd'),
+
+(14,
+ 'Budaors Triatlon',
+ 'A Budaorsi Triatlon Klub 2003 ota mukodik Vanek Gabor vezetesevel, aki az alapitas ota vezeti es koordinalja a csapat felkeszuleset es versenyzeset. Jelenleg mar a kulonbozo korosztalyokban kb. 70 versenyzonk van. Uszoedzonk Dr. Pozsgay Gabor, kerekparos edzonk Pocsfoldi Otto, futoedzonk Zemen...',
+ 'budaors.triatlon@gmail.com',
+ '+36-20-941-4542',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Budaors_Triatlon_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/xaSY0JTWiCMUTzS7sRA7SNOFpRKY5TaK.jpg',
+ 0.0, 0,
+ 'Gesztenye utca 11.',
+ 2040,
+ 'Budaors'),
+
+(15,
+ 'Footour Sport Club',
+ 'Futo egyesulet Tata varosban.',
+ 'info@footour.hu',
+ '+36-20-455-8625',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Footour_Sport_Club_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/Ow4N6Q4hDQxlBfdrUEDPOhlVsVKCmVIr.png',
+ 0.0, 0,
+ 'Bajcsy Zsilinszky u. 46. I/3.',
+ 2890,
+ 'Tata'),
+
+(16,
+ 'Szingo Cycling Team',
+ 'Bar csak 2014-ben indult utanpotlasunk, mar ket es fel ev utan is latvanyos eredmenyeket ertunk el veluk, versenyzoink kozott van Magyar Bajnok es orszagos bajnoksagon elert masodik helyezett, szamos Magyar Kupa futam gyozelemmel rendelkezunk es a felnott valogatottnak is neveltunk mar versenyzot....',
+ 'info@szingo.hu',
+ '+36-20-203-4054',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Szingo_Cycling_Team_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/ZtwQemjnzAf5kmWIPuZThO17MYPo7mpw.jpg',
+ 0.0, 0,
+ 'Berenyi ut 31.',
+ 8000,
+ 'Szekesfehervar'),
+
+(17,
+ 'Bakony Bike Kerekparos Egyesulet',
+ 'Kezdetben a turazassal foglakozo kerekparos egyesulet, kesobb az amator versenysportag egyik prominens egyesuleteve notte ki magat. Jelenleg rendelkezunk harom szakosztallyal:1. Orszaguti versenyzok2. Orszaguti teljesitmenyturazok 3. MTB versenyzok Alakulasakor Varpalota varos egyesulete volt, de...',
+ 'bakonybike1@gmail.com',
+ '+36-30-238-7431',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Bakony_Bike_Kerekparos_Egyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/D9fImNx3Fjjttmqw0j3DvIX2U0fRsA-F.png',
+ 0.0, 0,
+ 'Ujmandulas utca 4.',
+ 8105,
+ 'Petfurdo'),
+
+(18,
+ 'HungaroFondo',
+ 'Kerekparozni jo. Sot... nekunk a legjobb dolog a vilagon. Szamunkra a kerekparozas szenvedely es eletforma. Kozossegben tekerni pedig egyenesen elmeny. Ez az erzes ma sokakat athat Magyarorszagon, es szerencsere, egyre tobbeket. Barati tarsasagunkban sok dolog kozos, de kulonosen a kerekparozas es...',
+ 'info@hungarofondo.hu',
+ '+36-70-938-8015',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/HungaroFondo_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/w6Xr6YWJ6SlD0mG_3tbWXKU-FbaaXOhh.jpg',
+ 0.0, 0,
+ 'Deak Ferenc u. 46.',
+ 2091,
+ 'Etyek'),
+
+(19,
+ 'Veszpremi Kerekparos Egyesulet',
+ 'A Veszpremi Kerekparos Egyesuletet 2005-ben hoztuk letre azzal az elsodleges gondolattal, hogy a veszpremi es kornyekbeli bicajosokkal osszefogva, kozos turakat, edzeseket es mindennapi szabadidos gurulasokat szervezzunk. Evek ota egyre tobben jarunk a kornyekrol kulonbozo montis es orszaguti...',
+ 'vke.l.horvath@gmail.com',
+ '+36-20-928-9173',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Veszpremi_Kerekparos_Egyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/kepek/thumbs/8266566ce08311f1c3eeab8bb1ef8243.jpg',
+ 0.0, 0,
+ 'Lovohaz u.17.',
+ 8200,
+ 'Veszprem'),
+
+(20,
+ 'VVSI Evezos Utanpotlasert Alapitvany',
+ 'A VVSI otven eve egyet jelent a Velencei-tavi evezessel. Utanpotlas, felnott es szabadidos sportolok edzenek nalunk',
+ 'rowing@vvsi.hu',
+ '+36-30-115-1170',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/vvsi-evezos-utanotlasert-alapitvany',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/Q7XAqsxqo_gsGoMQXYDGAXEPlNAIQPmA.jpg',
+ 0.0, 0,
+ 'Topart u.17.',
+ 2484,
+ 'Gardony'),
+
+(21,
+ 'PATRIOT Yacht Club Vitorlas,- Kajak-Kenu Vizi-tura es Vizimento Sportegyesulet',
+ 'A Patriot S.E. Siofokon mukodo vitorlas es kajak-kenu sportegyesulet. Egyesuletunk 2001-ben alakult, elsosorban, mint kedvtelesi es turazasi celu vitorlas egyesulet. Eszkozparkunk kezdetben 2-3 vitorlas kishajobol allt. Tagjaink inkabb a vitorlazast kedvelo barati korbol kerultek ki. A mukodesunk...',
+ 'yacht-sail@yacht-sail.hu',
+ '+36-30-929-9413',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/PATRIOT_Yacht_Club_Vitorlas__Kajak_Kenu_Vizi_tura_es_Vizimento_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/oyiC-h4Dm5MEOs5g8J9rUqk-51BU2MmS.jpg',
+ 0.0, 0,
+ 'Aradi Vertanuk u. 65.',
+ 8600,
+ 'Siofok'),
+
+(22,
+ 'Siofoki Kajak Kenu Sportegyesulet',
+ 'Celunk: Siofok varos es kistersege sporteletenek reszekent - a gyermek es ifjusagi sport, valamint az utanpotlas-neveles tamogatasa, - a fogyatekosok sportjanak tamogatasa, - az egeszseges eletmod es a szabadidosport feltetelei megteremtesenek es fejlesztesenek elosegitese, - az utanpotlas-neveles...',
+ 'kajakkenusiofok@gmail.com',
+ '+36-70-314-4013',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Siofoki_Kajak_Kenu_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/PUKIb_BhNTetjdgvyNOT6kXLeIAt2iQp.jpg',
+ 0.0, 0,
+ 'Kele utca hrsz 5867/5.',
+ 8600,
+ 'Siofok'),
+
+(23,
+ 'Domsodi Kajak- Kenu Sportegyesulet',
+ 'A Domsodi Kajak- Kenu Sportegyesulet korcsoportos lebontasban tanitja a gyermeket. A vizbiztonsag miatt is kiemelt fontossagu az uszasoktatas. Kozremukodesunkkel, eddig 57 gyermek tett sikeres uszovizsgat. A sikeres uszovizsgat kovetoen a kajak kenu alap elsajatitasa kovetkezik, ugymint hajoban...',
+ 'info@dkkse.hu',
+ '+36-70-263-0636',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Domsodi_Kajak__Kenu_Sportegyesulet',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/VcI5nZCArDNaVQmYCJcjW0sG8xOiBGdr.png',
+ 0.0, 0,
+ 'Kozepso-Dunapart 1.',
+ 2344,
+ 'Domsod'),
+
+(24,
+ 'Kis-Duna Sportegyesulet',
+ 'Egyesuletunk egy hosszu evek ota mukodo kajak versenyszakosztaly, mely Szigethalom Dunaszigeten talalhato, kulonosen szep kornyezetben, egesz evben evezheto, nagy vizfelulettel. Fo profilunk utanpotlas koru gyermekek felkeszitese a Magyar Kajak-Kenu Szovetseg altal kiirt es megszervezett...',
+ 'info@kdse.hu',
+ '+36-30-513-8958',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Kis_Duna_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/f2Q7exCmj4aAOvxw5OW4VVn2i1Dg8QNP.JPG',
+ 0.0, 0,
+ 'Kossuth Lajos u. 10.',
+ 2315,
+ 'Szigethalom'),
+
+(25,
+ 'Tihanyi Hajos Egylet',
+ 'Sup es szorf egyesulet Tihany varosban.',
+ 'gyula.bano@thesail.hu',
+ '+36-20-330-7714',
+ 'https://www.thesail.hu/',
+ 'https://www.thesail.hu/wp-content/uploads/2018/02/TheSail_logo_70.png',
+ 0.0, 0,
+ 'Kenderfold u. 19.',
+ 8237,
+ 'Tihany'),
+
+(26,
+ 'Komarom-Esztergom Megyei Horgasz Egyesuletek Szov.',
+ 'A Komarom-Esztergom Varmegyei Horgaszegyesuletek Szovetsege (KEMHESZ) a megye horgaszati ugyes-bajos dolgait szervezi es kepviseli, celja a fenntarthato',
+ 'iroda@kemhesz.hu',
+ '+36-34-310-453',
+ 'https://kemhesz.hu/',
+ 'https://kemhesz.hu/wp-content/uploads/2025/10/logo.png',
+ 0.0, 0,
+ 'Banhidai ltp. 108.',
+ 2800,
+ 'Tatabanya'),
+
+(27,
+ 'Feher Patko Lovasudvar',
+ 'Lovasoktatas gyerekeknek es felnotteknek egyarant, kezdo szinttol versenyzesig. Bertartasi, illetve loberlesi lehetoseg.',
+ 'feherpatkolovasudvar@gmail.com',
+ '+36-20-435-6349',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/feher-patko-lovasudvar',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/suuqDlwyJ6MAcDsUg7QyVTDJClJJvXJL.jpg',
+ 0.0, 0,
+ 'Kiskut utja 1.',
+ 8000,
+ 'Szekesfehervar'),
+
+(28,
+ 'Kunos Lovarda',
+ 'Szinvonalas lovasoktatassal, kepzett oktatokkal varjuk a lovagolni vagyokat kezdotol a profi szintig. A teli hideg se riasszon vissza senkit! Fedeles palyan folyik az oktatas, lovaglas. A kiseroknek melegedo, bufe szolgalja a kenyelmet.',
+ 'info@kunos.hu',
+ '+36-20-589-7650',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/kunos-lovarda',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/bAIJZYz3zNlTVF4NY3ibqBcZVj4dTtC9.jpg',
+ 0.0, 0,
+ 'Kisteleki tanya',
+ 8000,
+ 'Szekesfehervar'),
+
+(29,
+ 'Urhidai Lovas Egyesulet',
+ 'Lovas egyesulet Urhida varosban.',
+ 'eeedddit@gmail.com',
+ '+36-20-295-2940',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/urhidai-lovas-egyesulet',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/aCztXr89_osutYTAl8KMfaA9b9J1rxeG.jpg',
+ 0.0, 0,
+ 'Pirosalma u. 12.',
+ 8142,
+ 'Urhida'),
+
+(30,
+ 'Nyerito Lovasudvar',
+ 'A Nyerito Lovasudvar a falu kozpontjaban, es egyben a termeszetvedelmi terulet es az Ingokovek szomszedsagaban talalhato, bamulatos kilatassal a Velencei- tora es a hegysegre.',
+ 'virag.kriszti@freemail.hu',
+ '+36-30-904-5881',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Nyerito_Lovasudvar_2',
+ 'https://gyeresportolni.hu/images/uploads/kepek/thumbs/2993.jpg',
+ 0.0, 0,
+ 'Fo u. 39.',
+ 8096,
+ 'Sukoro'),
+
+(31,
+ 'Spinfitt Fitness',
+ 'Spinracing 2100 Ft/alk. Szemelyi edzes (Csicso Judit TRX -Trainer), fitnesz edzotermunkben gerinctorna, felfuggeszteses edzesre is lehetoseg van.',
+ 'info@spinfitt.hu',
+ '+36-20-491-7375',
+ 'https://spinfitt.hu/',
+ 'https://spinfitt.hu/assets/images/logo/logo3.png',
+ 0.0, 0,
+ 'Gyumolcs utca 38. foldsz',
+ 8000,
+ 'Szekesfehervar'),
+
+(32,
+ 'Fitfount',
+ 'szemelyi edzes Szekesfehervar, fogyas-garancia, eronoveles-garancia, vernyomascsokkentes es egeszsegjavitas diplomas professzionalis szemelyi edzokkel',
+ 'info@fitfount.hu',
+ '+36-30-301-4444',
+ 'https://www.fitfount.hu/',
+ 'https://4255f134c4.clvaw-cdnwnd.com/e4229c6c44f7aa3e1cfaab61d9d6417f/200000318-1523c1523d/ffalap2.ico?ph=4255f134c4',
+ 0.0, 0,
+ 'Vorosmarty ter 5.',
+ 8000,
+ 'Szekesfehervar'),
+
+(33,
+ 'RockStar SE, Rock Star GYM edzoterem',
+ 'Fitness egyesulet Siofok varosban.',
+ 'info@rockstargym.hu',
+ '+36-20-321-7891',
+ 'https://rockstargym.hu/',
+ 'https://rockstargym.hu/assets/img/logo.svg',
+ 0.0, 0,
+ 'Bajcsy Zsilinszky utca 212. 5-os e',
+ 8600,
+ 'Siofok'),
+
+(34,
+ 'Shakti Jogastudio es Mozgaskozpont',
+ 'Jogastudio es mozgaskozpont Szekesfehervar belvarosaban, hatha joga es mozgasorak.',
+ 'shaktijogastudio@gmail.com',
+ '+36-20-956-8764',
+ 'https://www.shaktijogastudio.hu',
+ '',
+ 0.0, 0,
+ 'Liszt Ferenc u. 11.',
+ 8000,
+ 'Szekesfehervar'),
+
+(35,
+ 'TMS Pilates Szekesfehervar',
+ 'Valaszd a gyonyoru, uj studionkat Szekesfehervaron! Csatlakozz kozossegunkhoz es elvezd a Pilates nyujtotta testi-lelki egyensulyt! Tudnod kell, hogy barki is',
+ 'tmspilatesfehervar@gmail.com',
+ '+36-30-437-4474',
+ 'https://www.tmspilates.hu/fehervar/',
+ 'https://www.tmspilates.hu/wp-content/uploads/2021/11/TMS_Pilates_logo_fekete.png',
+ 0.0, 0,
+ 'Kiraly sor 60.',
+ 8000,
+ 'Szekesfehervar'),
+
+(36,
+ 'Flow Pilates Mozgasstudio',
+ 'Csoportos reformer pilates edzesek exkluziv kornyezetben, kezdoknek es haladoknak, Szekesfehervaron a Campus lakoparkban.',
+ 'szilvia@flowpilates.hu',
+ '+36-30-276-0013',
+ 'https://www.flowpilates.hu/',
+ 'https://www.flowpilates.hu/wp-content/uploads/2026/07/Flow-logo_color.png',
+ 0.0, 0,
+ 'Huszar u. 3.',
+ 8000,
+ 'Szekesfehervar'),
+
+(37,
+ 'Pilates Alba Studio',
+ 'Pilates egyesulet Szekesfehervar varosban.',
+ 'info@pilatesalba.hu',
+ '+36-30-531-6868',
+ 'https://pilatesalba.hu/',
+ 'https://pilatesalba.hu/wp-content/uploads/2023/02/cropped-pilates-logo-vagott-scaled-1.jpg',
+ 0.0, 0,
+ 'Szinhaz u. 2.',
+ 8000,
+ 'Szekesfehervar'),
+
+(38,
+ 'Laguna KTSE',
+ 'A LAGUNA Tancklubot 1995. marciusaban alapitottuk Szekesfehervaron. Celunk volt, hogy minel szelesebb korben megismertessuk a standard es a latin-amerikai tancokat, es lehetoseget biztositsunk e tancok elsajatitasara minden korosztaly szamara. Tovabba edzesi es versenyzesi lehetoseget kivantunk...',
+ 'lagunaktse@freemail.hu',
+ '+36-20-972-5593',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Laguna_KTSE_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/0z7XWjM0ybVF2xsqO9ykq2GIsa54GY7n.png',
+ 0.0, 0,
+ 'Kaszap Istvan u. 6.',
+ 8000,
+ 'Szekesfehervar'),
+
+(39,
+ 'Kecskedi Neptanc Csoport',
+ 'A Kecskedi Muveszeti es Neptanc Egyuttes 1963-ban alakult. Fennallasanak ideje alatt hagyomanyaikat, szokasvilagukat, kulturalis ertekeiket gyujtotte, apolta, eltette es orokitette at generaciokrol generaciokra. A Kecskedi Egyuttes jelenleg 5 generaciot atfogo tanccsoportbol all:...',
+ 'legatcsaba@gmail.com',
+ '+36-30-717-2501',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/kecskedi-neptanc-csoport',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/uUeS7nQDos80u9ARKKhAkWnhERntIYdR.png',
+ 0.0, 0,
+ 'Fo u. 1.',
+ 2852,
+ 'Kecsked'),
+
+(40,
+ 'B-Cool Dance Team Sportegyesulet',
+ 'Lanyok, fiuk figyelem!!!! B-Cool Dance Team SE immaron 4. eve mukodik. Orszagos es Nemzetkozi tancversenyeken veszunk reszt, ahol szamos sikereket tudhatnak sportoloink maguk mogott. Kicsik es nagyok egyarant tancolnak nalunk, akik nem csak egy stilust, hanem tobbet is tanulhatnak. :)...',
+ 'bcooldance@outlook.com',
+ '+36-20-499-7869',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/B_Cool_Dance_Team_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/kbpfn-G41vRvVO9z1_gM6epXdvwY0pyt.jpg',
+ 0.0, 0,
+ 'Duna utca 28.',
+ 2440,
+ 'Szazhalombatta'),
+
+(41,
+ 'Bonita Sporttanc Egyesulet',
+ 'Tanc egyesulet Veszprem varosban.',
+ 'gabybonitatanc@gmail.com',
+ '+36-20-223-7441',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Bonita_Sporttanc_Egyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/qkkjcCyZjXd0TfAk9LgnEEFcC28P81d1.jpg',
+ 0.0, 0,
+ 'Hoffer Armin setany 2.',
+ 8200,
+ 'Veszprem'),
+
+(42,
+ 'Sportolj Velunk Sportegyesulet',
+ 'Sportolj Velunk Sportegyesulet, Veszprem',
+ 'sportoljvelunkse@gmail.com',
+ '+36-30-638-7055',
+ 'https://sportoljvelunk.veszpremben.hu/',
+ 'https://sportoljvelunk.veszpremben.hu/wp-content/uploads/2018/01/SVSE_logo_250px-200x41.png',
+ 0.0, 0,
+ 'Varga utca 4/F',
+ 8200,
+ 'Veszprem'),
+
+(43,
+ 'Veszpremi Egyetemi es Diak Atletikai Club',
+ 'Atletikai egyesulet Veszprem varosban.',
+ 'vedac@vedac.hu',
+ '+36-88-422-868',
+ 'https://vedac.hu/',
+ 'https://vedac.hu/sites/site/static/img/header-logo.png',
+ 0.0, 0,
+ 'Wartha Vince u. 3.',
+ 8200,
+ 'Veszprem'),
+
+(44,
+ 'Sprint Futoklub',
+ 'Atletikai egyesulet Tatabanya varosban.',
+ 'sprintfutoklub@gmail.com',
+ '+36-30-265-1199',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Sprint_Futoklub_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/etp0sanBmu4h8Nrsr0sm018aVJlWRorD.png',
+ 0.0, 0,
+ 'Gal Istvan ltp. 511.',
+ 2800,
+ 'Tatabanya'),
+
+(45,
+ 'Tatai Tomegsport es Tajfuto Honved Sportegyesulet',
+ 'Atletikai egyesulet Tata varosban.',
+ 'ttt.tata.2004@gmail.com',
+ '+36-30-575-4324',
+ 'https://ttt-tata.hu/',
+ 'https://ttt-tata.hu/wp-content/uploads/2022/07/TTT-Logo.png',
+ 0.0, 0,
+ 'Majus 1 ut 53/B',
+ 2890,
+ 'Tata'),
+
+(46,
+ 'Japan Harcmuveszeti Egyesulet',
+ '6 es 60 ev kozotti fiukat es lanyokat. Elofeltetel a jelentkezeshez felmeres, regiszracio Edzesek idopontjai gyermekeknek hetfo es pentek, 16:30-17:30, halado vegyes csoport tagjainak hetfo, szerda, pentek, 17:300-19:00 Tagdij 5000 Ft/f?',
+ 'teferencistvan@gmail.com',
+ '+36-20-397-8135',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Japan_Harcmuveszeti_Egyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/7qhazGCPe6cPC25oc0O3TtRayC2pEaQm.JPG',
+ 0.0, 0,
+ 'Kelemen Bela ut 18.',
+ 8000,
+ 'Szekesfehervar'),
+
+(47,
+ 'Raion Dojo Oroszlany',
+ 'Veled meg jobb lesz a csapatunk.',
+ 'oroszlanyikarate@gmail.com',
+ '+36-70-328-6989',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Raion_Dojo_Oroszlany',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/yvTB3vxNh6SkPzgabMsBGyWKr1GNyKN3.png',
+ 0.0, 0,
+ 'Banki Donat u. 8. 2/3.',
+ 2840,
+ 'Oroszlany'),
+
+(48,
+ 'Dinamik Harcmuveszeti Kozhasznu Sportegyesulet',
+ 'Celkituzeseink: - A mozgas, ezen belul is a harcmuveszet megismertetese es megszerettetese minel tobb emberrel; - Pozitiv gondolkodasra es onfegyelemre, onallosagra neveles; - Mai vilagunkra oly jellemzo stressz kezelese, azzal valo banasmod elsajatitasa; - Az egyre jobban feledesbe merulo alapveto...',
+ 'info@dhkse.hu',
+ '+36-20-955-8124',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Dinamik_Harcmuveszeti_Kozhasznu_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/M_YuWraglxleOggKZYtUJihnnTgHv83g.jpg',
+ 0.0, 0,
+ 'Kolcsey Ferenc utca. 23.',
+ 2060,
+ 'Bicske'),
+
+(49,
+ 'Budoka - Siofok es Kornyeke Sport es Szabadido Egyesulet',
+ 'Harcmuveszeti egyesulet Siofok varosban.',
+ 'kaloczij@gmail.com',
+ '+36-30-387-6444',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Budoka___Siofok_es_Kornyeke_Sport_es_Szabadido_Egyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/8I0y1ALgtoBZeXezOinkX4gG4FermuZX.jpg',
+ 0.0, 0,
+ 'Wesselenyi M.u.100.',
+ 8600,
+ 'Siofok'),
+
+(50,
+ 'Mad Max Kempo Dojo',
+ 'Harcmuveszeti egyesulet Bicske varosban.',
+ 'postalada@madmaxdojo.hu',
+ '+36-30-457-0367',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Mad_Max_Kempo_Dojo_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/uQTi_rTps8vg4jYpUe8lklwcpEysrINO.jpg',
+ 0.0, 0,
+ 'Majus 1 ut 38.',
+ 2060,
+ 'Bicske'),
+
+(51,
+ 'Veszpremi Tollaslabda Egyesulet',
+ 'A tollaslabda jatekot eletkortol es nemtol fuggetlenul mindenki uzheti. Csatlakozz hozzank, ismerkedj meg a szabalyokkal es jatssz!',
+ 'veszprem.tollas@gmail.com',
+ '+36-20-326-3202',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Veszpremi_Tollaslabda_Egyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/k0obwkmIsrgpK6YWPS00-5FD1838swCD.jpg',
+ 0.0, 0,
+ 'Wartha Vince utca 3.',
+ 8200,
+ 'Veszprem'),
+
+(52,
+ 'EVSE Tollaslabda Szakosztaly',
+ 'Tollaslabda egyesulet Erd varosban.',
+ 'erditollas@gmail.com',
+ '+36-30-590-9291',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/EVSE_Tollaslabda_Szakosztaly_2',
+ '',
+ 0.0, 0,
+ 'Facan koz 1.',
+ 2030,
+ 'Erd'),
+
+(53,
+ 'Alba Bianca Tennis Club',
+ '1994-ben alapitottam meg az Alba Bianca Tennis Clubot. A club tevekenyseget egy 6 salakos teniszpalyan vegzi melyet berel. A teli szakaszban 1 db satorban dolgozik, melyet szinten berel. A club 40 fos, kisgyermekekbol allo. Tenisziskolaval rendelkezik. Egesz evben tenisztanfolyamokat tart, nyaron...',
+ 'albabiancatenisz@gmail.com',
+ '+36-20-942-0932',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Alba_Binca_Tennis_Club_2',
+ '',
+ 0.0, 0,
+ 'Puspokkertvaros 13.',
+ 8000,
+ 'Szekesfehervar'),
+
+(54,
+ 'Agardi Tenisz Club',
+ 'Ha kikapcsolodasra vagysz, ha sportolni szeretnel, ha a jatek orome vonz, akkor gyere hozzank teniszezni.',
+ 'info@agarditc.hu',
+ '+36-20-281-6556',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Agardi_Tenisz_Club_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/Iu8BdmbH42AFkT16TE9rQFEGRGc8aeLD.jpg',
+ 0.0, 0,
+ 'Meggyfasor 1.',
+ 2481,
+ 'Velence'),
+
+(55,
+ 'Balatonalmadi Tenisz Klub',
+ 'Tenisz egyesulet Balatonalmadi varosban.',
+ 'almaditenisz@gmail.com',
+ '+36-20-483-8780',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Balatonalmadi_Tenisz_Klub_2',
+ 'https://gyeresportolni.hu/images/uploads/kepek/thumbs/ab7fcadd54cf29c6158e00ca1074a41f.jpg',
+ 0.0, 0,
+ 'Rakoczi u. 16.',
+ 8220,
+ 'Balatonalmadi'),
+
+(56,
+ 'Siofoki Tenisz Klub',
+ 'Magas szinvonalu es nemzetkozi szintu versenykovetelmenyeknek is eleget tevo palyainkat olyan szolgaltatasokkal bovitettuk ki, amelyek meg nagyobb elmennye tehetik a sportolast a tenisz szerelmesei szamara itt, Siofokon. A zold kornyezetben, magas fak es viragok kozott eltoltott edzes utan igenybe...',
+ 'info@skctennis.hu',
+ '+36-30-491-4634',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Siofoki_Tenisz_Klub_2',
+ '',
+ 0.0, 0,
+ 'Deli ut 2.',
+ 8600,
+ 'Siofok'),
+
+(57,
+ 'Siofoki Asztalitenisz Klub',
+ 'Asztalitenisz egyesulet Siofok varosban.',
+ 'asztalitenisz@siofoki-asztalitenisz.hu',
+ '+36-30-632-1641',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Siofoki_Asztalitenisz_Klub_2',
+ '',
+ 0.0, 0,
+ 'Ujpiac ter 6.',
+ 8600,
+ 'Siofok'),
+
+(58,
+ 'Dunaujvarosi Egyetem Diak Sportegyesulet',
+ 'Asztalitenisz egyesulet Dunaujvaros varosban.',
+ 'varga.richard@dstv.hu',
+ '+36-25-551-130',
+ 'http://www.duedse.hu/index.php?p=pingpong',
+ 'http://www.duedse.hu/images/duedse_logo.jpg',
+ 0.0, 0,
+ 'Tancsics M. u. 1/a',
+ 2400,
+ 'Dunaujvaros'),
+
+(59,
+ 'Dunaujvarosi Asztalitenisz Sportegyesulet',
+ 'dunaujvarosi Moricz Iskolaban minden heten kedden, szerdan es penteken du. 16 oratol az utanpotlas, 17.30-tol pedig a felnottek pufolik a labdat most mar akar 10 asztalon is. Hetvegen kulonbozo versenyeken es az alabbi bajnoksagokban kuzdunk. Elso csapatunk a DASE I. az NB II. Del-Nyugati...',
+ 'dunadase@gmail.com',
+ '+36-30-217-2476',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/dunaujvarosi-asztalitenisz-sportegyesulet',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/oSOofzeDCPh6IQ-0n-7dEHA1EC08w_Aw.png',
+ 0.0, 0,
+ 'Vasmu ut 29. I. 1.',
+ 2400,
+ 'Dunaujvaros'),
+
+(60,
+ 'Budaorsi Sport Club Asztalitenisz Szakosztaly',
+ 'A Budaorsi Sport Club Asztalitenisz Szakosztalyaban jelenleg tobb, mint szazan sportolunk. Csapataink: Noi Extra Liga Ferfi NB1 Ferfi NB2 Felnott csapatainkon kivul egyre tobb gyerek sportol nalunk. Fo feladatunk es celunk sportagunk nepszerusitese Budaorson, es a Varos valamint egyesuletunk...',
+ 'szvitan.krisztina@budaorsisc.hu',
+ '+36-20-317-5541',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Budaorsi_Sport_Club_Asztalitenisz_Szakosztaly_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/YXOkRvS2c5EDKTLEM_nlho9W9_nmUptl.jpg',
+ 0.0, 0,
+ 'Harsfa u. 6.',
+ 2040,
+ 'Budaors'),
+
+(61,
+ 'Dunaharaszti Asztalitenisz Szakosztaly',
+ 'A szakosztaly I. csapata a Pest Megye I. osztalyban, a II. csapat a Pest Megye I/B osztalyban jatszik 2012. ev ota. 2014 szeptemberetol ujra megindult az utanpotlas felkeszitese Varadi Gyorgy szakosztalyvezeto, Takacs Laszlo vezetoedzo vezetesevel. A csoportok a Hunyadi es a II. Rakoczi Altalanos...',
+ 'asztalitenisz@dmtk-sport.hu',
+ '+36-30-825-4271',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Dunaharaszti_Asztalitenisz_Szakosztaly_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/_EMZQPJvSHRj6mlvxjP9AVtCGy6z2Qqf.jpg',
+ 0.0, 0,
+ 'Rakoczi ut 28.',
+ 2330,
+ 'Dunaharaszti'),
+
+(62,
+ 'Ifj. Ocskay Gabor Jegkorong Akademia',
+ 'Az Ifj. Ocskay Gabor Jegkorong Akademia hivatalos honlapja.',
+ 'tekihoki@jegkorongakademia.hu',
+ '+36-70-336-3596',
+ 'https://www.jegkorongakademia.hu/',
+ 'https://www.jegkorongakademia.hu/assets/images/logo.png',
+ 0.0, 0,
+ 'Raktar utca 1.',
+ 8000,
+ 'Szekesfehervar'),
+
+(63,
+ 'ANGELS Noi Jegkorong Sportegyesulet',
+ 'Jegkorong egyesulet Dunaujvaros varosban.',
+ 'informacio@angyalok.hu',
+ '+36-20-586-3605',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/ANGELS_Noi_Jegkorong_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/v9lRYl85Q2CkfK31xOsthS6xOIl8Jwfz.jpg',
+ 0.0, 0,
+ 'Vaci Mihaly ut 4.3/4.',
+ 2400,
+ 'Dunaujvaros'),
+
+(64,
+ 'Szigeti Bikak Sport Egyesulet utanpotlas csapata',
+ 'Jegkorong egyesulet Szigetszentmiklos varosban.',
+ 'bela.droppa@gmail.com',
+ '+36-20-958-8394',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Szigeti_Bikak_Sport_Egyesulet_utanpotlas_csapata_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/85JJswB6VRLutkI21K41NhHjyb81JvUt.jpg',
+ 0.0, 0,
+ 'Csepi ut 15/a',
+ 2310,
+ 'Szigetszentmiklos'),
+
+(65,
+ 'Veszpremi Egyetemi SC',
+ 'A Veszpremi Egyetemi Sport Club (VESC) weboldala.',
+ 'info@vesc.hu',
+ '+36-88-624-017',
+ 'https://vesc.hu/',
+ 'https://vesc.hu/images/logo.png',
+ 0.0, 0,
+ 'Egyetem utca 10.',
+ 8200,
+ 'Veszprem'),
+
+(66,
+ 'TTC Gerevich Aladar Vivoszakosztaly',
+ 'Torokbalinton es kornyeken elo fiatalok szamara kozelebb hozni a vivas oktatasat, lehetoseget kinalva legeredmenyesebb olimpiai sportagunk megismeresere. Hosszutavon szeretnenk egy regionalis kozpontot kialakitani, ahol a gyerekek oktatasa mellett, beinditanank szabadidos sportolasi lehetosegkent...',
+ 'ttc.vivas@gmail.com',
+ '+36-30-951-2446',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/TTC_Gerevich_Aladar_Vivoszakosztaly_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/k3M2WC0mxcVauCP0BPLfaSlRe3DW0DV2.jpg',
+ 0.0, 0,
+ 'Ovoda utca 6.',
+ 2045,
+ 'Torokbalint'),
+
+(67,
+ 'Szazhalombatta Varos Ifjusagi SE',
+ 'Judo egyesulet Szazhalombatta varosban.',
+ 'sarisz@windowslive.com',
+ '+36-20-523-9486',
+ 'https://szazhalombattajudo.freewb.hu/',
+ '',
+ 0.0, 0,
+ 'Ifjusag utja 7.',
+ 2440,
+ 'Szazhalombatta'),
+
+(68,
+ 'Veszprem Judo',
+ 'Judo egyesulet Veszprem varosban.',
+ 'info@veszpremjudo.hu',
+ '+36-20-243-5754',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Veszprem_Judo_2',
+ 'https://gyeresportolni.hu/images/uploads/kepek/thumbs/c1824a2a4872dc22e894b70392cd24f9.jpg',
+ 0.0, 0,
+ 'Malomko utca 5.',
+ 8200,
+ 'Veszprem'),
+
+(69,
+ 'Benta Judo',
+ 'Judo egyesulet Erd varosban.',
+ 'krauszjanos@bentajudo.hu',
+ '+36-20-965-2242',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Benta_Judo_2',
+ '',
+ 0.0, 0,
+ 'Titkar u. 14.',
+ 2030,
+ 'Erd'),
+
+(70,
+ 'Ronin Judo Kozhasznu Alapitvany Balatonfured',
+ 'Judo egyesulet Balatonfured varosban.',
+ 'judoalapitvany@gmail.com',
+ '+36-70-611-9756',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Ronin_Judo_Kozhasznu_Alapitvany_Balatonfured__2',
+ 'https://gyeresportolni.hu/images/uploads/kepek/thumbs/78a5dd854326721583389c8e3926fd5e.jpg',
+ 0.0, 0,
+ 'Kossuth u 3.',
+ 8230,
+ 'Balatonfured'),
+
+(71,
+ 'Alba Control Karate Egyesulet',
+ 'Tradicionalis Shotokan Karate-Do Szekesfehervaron gyerekeknek es felnotteknek egyarant! Egy eroszakmentes mozgasmuveszet, amely megtanit az onismeretre; segit az onbizalom megerosodeseben; kialakitja a test- es lelek harmoniajat; fejleszti az egeszseges szemelyiseget; felkeszit a hatekony...',
+ 'janosszarvas123@gmail.com',
+ '+36-70-776-3604',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Alba_Control_Karate_Egyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/P_aRbFhj7VO3Da_r-6kz-WfpEhK01IVm.jpg',
+ 0.0, 0,
+ 'Deak F. u. 37. 9/1.',
+ 8000,
+ 'Szekesfehervar'),
+
+(72,
+ 'Dunaharaszti Goju-Ryu Karate Sportegyesulet',
+ 'A Dunahararaszti Goju-Ryu Karate Sportegyesulet 2001. oszen kezdte el tevekenyseget, a II. Rakoczi Ferenc Altalanos Iskolaban. Kezdetben a Magyarorszagi Goju-Ryu Karate-Do Szovetseg klubjakent mukodtunk, majd 2006-ban lettunk hivatalosan is bejegyzett tarsadalmi szervezet. Szervezetunk alapvetoen a...',
+ 'valkaimarta@dhgoju.hu',
+ '+36-30-242-5489',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Dunahararaszti_Goju_Ryu_Karate_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/sHU_sADpasRJST4A39v40XiYnbJ0JwaO.JPG',
+ 0.0, 0,
+ 'Ronai Gyorgy utca 112.',
+ 2330,
+ 'Dunaharaszti'),
+
+(73,
+ 'Kisdunamenti Ashihara Karate es Szabadidos Sport Egyesulet',
+ 'Egyesuletunk minosegi, modern kuzdosport oktatassal foglalkozik. Komplex kepzes: utesek, rugasok, vedekezesek, fogasok, kiterese, foldrevitelek, onvedelem gyermekeknek es felnotteknek egyarant.',
+ 'csurkamaria@gmail.com',
+ '+36-70-942-3550',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Kisdunamenti_Ashihara_Karate_es_Szabadidos_Sport_Egyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/9j9DtRvi4ykbSTky3V4QweawOQ2VqCk6.jpg',
+ 0.0, 0,
+ 'Arany Janos u. 38.',
+ 2330,
+ 'Dunaharaszti'),
+
+(74,
+ 'Tokoli Birkozo Sportegyesulet',
+ 'Kuzdosport egyesulet Tokol varosban.',
+ 'ivancsicsgeza@gmail.com',
+ '+36-20-489-8195',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Tokoli_Birkozo_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/Vba-3opOqzbDipzfzkxJXeVrZt6Ylkbc.png',
+ 0.0, 0,
+ 'Aradi u. 56.',
+ 2316,
+ 'Tokol'),
+
+(75,
+ 'Budaorsi Integralt Kuzdosport Kozpont',
+ 'Kozpontunkban mindenki megtalalhatja a neki megfelelo edzest. Korcsoportos bontasban foglalkozunk ovodasokkal, iskolasokkal es felnottekkel. Celunk, hogy a jiu jitsun keresztul fejlesszuk a tagjaink onbizalmat es eletminoseget. A Budaorsi Integralt Kuzdosport Kozpont vezeto edzoje Szekeres Akos....',
+ 'szekeres.akos.zoltan@gmail.com',
+ '+36-70-344-7434',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Budorsi_Integralt_Kuzdosport_Kozpont_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/woZGW7juZgdjH0i_Vc24gTZ3ZIBxqoBq.png',
+ 0.0, 0,
+ 'Karoly kiraly u. 145.',
+ 2040,
+ 'Budaors'),
+
+(76,
+ 'Dunaharaszti Munkas Testedzo Kor',
+ 'Rolunk - A Dunaharaszti MTK rovid tortenete',
+ 'iroda@dmtk.hu',
+ '+36-30-364-4229',
+ 'https://dmtk.hu/',
+ 'https://dmtk.hu/templates/rt_reiko/custom/images/logo/DMTK-logo_1.png',
+ 0.0, 0,
+ 'Fo ut 152.',
+ 2330,
+ 'Dunaharaszti'),
+
+(77,
+ 'Dorogi Nehezatletikai Club',
+ 'Kuzdosport egyesulet Dorog varosban.',
+ 'dorogibirkozas@gmail.hu',
+ '+36-70-332-2905',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Dorogi_Nehezatletikai_Club_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/c9fbhxOq9Dc9sH8RkbdMxwB1gaOgcv5l.jpg',
+ 0.0, 0,
+ 'Becsi ut 34.',
+ 2510,
+ 'Dorog'),
+
+(78,
+ 'Budaorsi Box Club',
+ 'Okolvivo egyesulet Budaors varosban.',
+ 'budaorsiboxclub@gmail.com',
+ '+36-70-882-7483',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Budaorsi_Box_Club_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/joeR2MOJNjUtSnKnuUtdO6e9As956D0u.jpg',
+ 0.0, 0,
+ 'Epitok utja 2-4.C ep',
+ 2040,
+ 'Budaors'),
+
+(79,
+ 'Budaorsi Kick-Box SE',
+ 'Kick-box egyesulet Budaors varosban.',
+ 'katonabarnabas@gmail.com',
+ '+36-30-411-4608',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Budaorsi_Kick_Box_SE_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/DspOqigaGKgyFEEjbU-eZvCbtcX02eAG.jpg',
+ 0.0, 0,
+ 'Levai u. 33.',
+ 2040,
+ 'Budaors'),
+
+(80,
+ 'Trampolin Sportegyesulet/Lizards Floorball Team',
+ '2007 novembereben megalakult floorball szakosztalyunk... A floorball csapat tudasa olyan szintre emelkedett, hogy a gyerekek, a szulok es termeszetesen az edzok kozos elhatarozasaval benevezunk a 2009/2010-es a korosztalyos orszagos bajnoksagba ... ... a kemeny es kitarto edzesmunkanak koszonhetoen...',
+ 'kojasi@trampolin.hu',
+ '+36-70-459-4338',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Trampolin_SportegyesuletLizards_Floorball_Team_2',
+ 'https://gyeresportolni.hu/images/uploads/kepek/thumbs/d1a37c62eb0f661a84215b1aa080f211.jpg',
+ 0.0, 0,
+ 'Nyerges utca Fsz. 4.',
+ 8200,
+ 'Veszprem'),
+
+(81,
+ 'Dunai Krokodilok SE',
+ 'Floorball egyesulet Erd varosban.',
+ 'floorball@krokodilok.hu',
+ '+36-30-317-0298',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Dunai_Krokodilok_SE_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/-ZjK-UtxLwpfAMTNtIfesax3VSZzYps0.png',
+ 0.0, 0,
+ 'Szarkalab u. 18.',
+ 2030,
+ 'Erd'),
+
+(82,
+ 'Szigeti Rokak Sportegyesulet',
+ 'Vallalt celunk hogy fiatalok es minden mas korosztalynak bemutatni a mozgas fontossagat. Floorball es a Hockey sportokon keresztul. Szeretnenk lehetoseget adni olyan embereknek is akik valamilyen testi vagy szellemi korlatokkal rendelkeznek.',
+ 'sandorcsaba63@gmail.com',
+ '+36-30-366-8358',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Szigeti_Rokak_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/5NaRU6awA-AB-SAQwKNsHrZFYytmAb6y.JPG',
+ 0.0, 0,
+ 'Vagany u. 16.',
+ 2310,
+ 'Szigetszentmiklos'),
+
+(83,
+ 'Dunafem-Maroshegy SE',
+ 'Szekesfehervar egyik patinas egyesuletekent 1951. ota a szekesfehervari Ikarus gyar tamogatasaval vettunk reszt a varos sporteleteben. Mint altalaban az egyesuletek eleteben a rendszervaltozas minket is komolyan erintett. A gazdasagi nehezsegeket egyedul a labdarugo szakosztaly elte tul....',
+ 'mesics.janos@freemail.hu',
+ '+36-20-380-4795',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Dunafem_Maroshegy_SE_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/1P_BEsYGKkd33uguhnuKMd23QjkqjPIE.jpg',
+ 0.0, 0,
+ 'Csikvari u. 10.',
+ 8000,
+ 'Szekesfehervar'),
+
+(84,
+ 'Fonix Gold Fc.',
+ 'Kedves Erdeklodo, egyesuletunknel mar 5 eves kortol varunk minden labdarugast szereto gyermeket. A honlapunkon az "edzesek" menupontra kattintva megtudhatod a korosztalyok edzesidopontjait es szukseg eseten az edzok nevet es elerhetoseget. Beiratkozas elott kotetlenul vegyel reszt nalunk nehany...',
+ 'info@fonixgoldfc.hu',
+ '+36-30-304-2277',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Fonix_Gold_Fc_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/sMoOcn3avbQIht5l7JAI4Gwk4T1HB0lY.jpg',
+ 0.0, 0,
+ 'Gombocleso u',
+ 8000,
+ 'Szekesfehervar'),
+
+(85,
+ 'Fehervarcsurgoi Sportegyesulet',
+ 'A valtozatos eveket kovetoen a Fehervarcsurgoi Sportegyesulet labdarugocsapata 2009-ben megnyerte az FMLSZ Megyei III. osztalyu bajnoksaganak kozep csoportjat es jelenleg a megyei II. osztalyban szerepel. Folyamatosan dolgozunk a felnott keret es az utanpotlas bazis erositesen, a megfelelo...',
+ 'fehervarcsurgose@gmail.com',
+ '+36-30-947-0848',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Fehervarcsurgoi_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/LfO66k22TzCREk8SIkruILU8RR2aAZE1.png',
+ 0.0, 0,
+ 'Dozsa Gyorgy utca 35.',
+ 8052,
+ 'Fehervarcsurgo'),
+
+(86,
+ 'Varpalotai Banyasz Sportkor Labdarugo Szakosztaly',
+ 'Labdarugo egyesulet Varpalota varosban.',
+ 'vbsklsz@gmail.com',
+ '+36-20-967-2330',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/varpalotai-banyasz-sportkor-labdarugo-szakosztaly',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/8avOuPbdKFjMbap5pYPtHmWQqXQmBqKu.jpg',
+ 0.0, 0,
+ 'Fehervari ut 9.',
+ 8100,
+ 'Varpalota'),
+
+(87,
+ 'David Kornel Kosarlabda Akademia',
+ 'Kosarlabda egyesulet Szekesfehervar varosban.',
+ 'sandor.farkas56@gmail.com',
+ '+36-20-993-6090',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/David_Kornel_Kosarlabda_Akademia_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/BlLGc4S6utgg5E-nUytjWKtDQPMSwx7c.png',
+ 0.0, 0,
+ 'Gaz u. 19.',
+ 8000,
+ 'Szekesfehervar'),
+
+(88,
+ 'Oroszlanyi Sportegylet',
+ 'Az OSE Lions az orszag egyik meghatarozo kosarlabda egyesulete, amely Oroszlanyban mukodik, es jelenleg tobb, mint 300 gyermek kosarlabdakepzeset es versenyezteteset biztositja. Az ovikosartol a legkulonbozobb gyermek korosztalyokig, a felnott NBI/B-s csapattal bezarolag orszagos bajnoksagokban,...',
+ 'oseiroda@gmail.com',
+ '+36-70-941-1502',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Oroszlanyi_Sportegylet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/hBVhKvsdpP54P4vspjmxGHHa-5bXcoZf.jpg',
+ 0.0, 0,
+ 'Fo ter 2.',
+ 2840,
+ 'Oroszlany'),
+
+(89,
+ 'Battai Villamok',
+ 'Szazhalombattai Kosarlabda Sportegyesulet Battai Villamok utanpotlas csapata',
+ 'battai.villamok@villamok.hu',
+ '+36-20-466-5611',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Battai_Villamok_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/k-lZZTw3KhiRKMpWsYYv_an7BiswLq_e.jpg',
+ 0.0, 0,
+ 'Haga Laszlo u. 7.',
+ 2440,
+ 'Szazhalombatta'),
+
+(90,
+ 'Veszpremi Utanpotlas Kosarlabda Egyesulet',
+ 'Kedves kosarlabdazni vagyo Fiatal Ur! Amennyiben szeretned kozelebbrol megismerni a kosarlabda sport szepseget, szeretnel tagja lenni egy sikeres utanpotlas csapatnak, bajnoksagban, versenyeken reszt venni, vagy csak szeretnel egyszeruen mozogni jelentkezz batran! Nincs mas dolgod, mint az alabbi...',
+ 'info@veszpremiuke.hu',
+ '+36-20-226-2214',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Veszpremi_Utanpotlas_Kosarlabda_Egyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/_op_lI9PDlMNsiLt1d7_7FteP1r9guYa.jpg',
+ 0.0, 0,
+ 'Furedi u. 12.',
+ 8200,
+ 'Veszprem'),
+
+(91,
+ 'Alba Fehervar KC',
+ 'Kezilabda egyesulet Szekesfehervar varosban.',
+ 'titkarsag@kofemsc.hu',
+ '+36-22-427-401',
+ 'https://www.albakezi.hu/',
+ 'https://www.albakezi.hu/_user/logo/type_2/1382430524.jpg',
+ 0.0, 0,
+ 'Verseci u. 1-15.',
+ 8000,
+ 'Szekesfehervar'),
+
+(92,
+ 'Gardony-Pazmand NKK',
+ 'Kezilabda egyesulet Pazmand varosban.',
+ 'gabor.domak.eva@gmail.com',
+ '+36-30-389-8043',
+ 'https://pazmandnkse.hu/',
+ '',
+ 0.0, 0,
+ 'Vadasz utca 14.',
+ 2476,
+ 'Pazmand'),
+
+(93,
+ 'Eles Jozsef Kezilabda Iskola',
+ 'Az Eles Kezisuli megalapitasaval egy olyan almom valosult meg melynek celja, hogy az utanpotlas-nevelesben kamatoztassam a kezilabda sportagban szerzett tapasztalataimat, lehetoseget biztositva a Veszprem es kornyeke fi ataljainak a testmozgasra, illetve arra, hogy ha tehetsegesek mar kiskorban a...',
+ 'eleskezisuli@gmail.com',
+ '+36-30-331-7133',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Eles_Jozsef_Kezilabda_Iskola_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/wrUroP_C963SbGYlxi9EnEpwZCHZOX7j.jpg',
+ 0.0, 0,
+ 'Kisberenyi ut 63.',
+ 8220,
+ 'Balatonalmadi'),
+
+(94,
+ 'Veszprem Handball Team Zrt.',
+ 'Kezilabda egyesulet Veszprem varosban.',
+ 'office@handballveszprem.hu',
+ '+36-88-688-504',
+ 'https://handballveszprem.hu/hu',
+ 'https://handballveszprem.hu/images/50LOGO.png',
+ 0.0, 0,
+ 'Kulso-kadartai ut 5.',
+ 8200,
+ 'Veszprem'),
+
+(95,
+ 'Delta Roplabda Sportegyesulet',
+ 'Szeretettel varunk minden olyan Erd es kornyeken elo fiatal sportbaratot, aki szeret roplabdazni, es szivesen csatlakozna egy jo tarsasaghoz! Az edzeseket Domotor-Matrai Beata, korabbi magyar valogatott roplabdazo tartja.',
+ 'deltarse01@gmail.com',
+ '+36-20-610-6610',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Delta_Roplabda_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/KFVlSoWjfGxyNFPFxdEGn6IqRTtH90hF.jpg',
+ 0.0, 0,
+ 'Canko utca 27.',
+ 2030,
+ 'Erd'),
+
+(96,
+ 'Szent Benedek - Balatonfured Roplabda Akademia',
+ 'A SZENT BENEDEK - BALATONFURED ROPLABDA AKADEMIA 2015-BEN ALAKULT. Azzal a szandekkal hoztuk letre a Roplabda Akademiat, hogy a Nyugat-Magyarorszagon roplabdazo noi utanpotlas koru jatekosokat egy magas szinvonalu utanpotlas nevelo klubba tudjuk integralni amellett, hogy a felnott csapatunk...',
+ 'szbbra@gmail.com',
+ '+36-20-245-4265',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Szent_Benedek___Balatonfured_Roplabda_Akademia_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/DKKFexzmmlhaoF1ZQwSpzT__JGcX5APD.jpg',
+ 0.0, 0,
+ 'Szent Istvan ter 1.',
+ 8230,
+ 'Balatonfured'),
+
+(97,
+ 'Tatabanya Mustangs Ifjusagi Amerikai Futball Csapat',
+ 'Amerikai futball egyesulet Tatabanya varosban.',
+ 'tamas.molnar@tatabanyamustangs.hu',
+ '+36-30-361-0602',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Tatabanya_Mustangs_Ifjusagi_Amerikai_Futball_Csapat_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/M83ZSXLvEWJxCCyPeoOfR5DAWQQN6ayy.jpg',
+ 0.0, 0,
+ 'Koztarsasag u',
+ 2800,
+ 'Tatabanya'),
+
+(98,
+ 'Dunaujvaros Gorillaz',
+ 'Csapatunk 2007-ben alakult, 2009-ben megnyertuk a Divizio II. kuzdelmeit, 2012-ben pedig a Divizio I. kupajat hoditottuk el. 2013-ban ujabb dontot jatszottunk, ezusteremmel zarult a szezon. Folyamatosan kepezzuk a junior es felnott jatekosokat, ha szeretned kiprobalni ezt a rendkivul izgalmas es...',
+ 'dunaujvaros.gorillaz@gmail.com',
+ '+36-20-333-7388',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Dunaujvaros_Gorillaz_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/9cIg9RvnzmTz1tEWLtAInisMo2Cjpm0B.jpg',
+ 0.0, 0,
+ 'Temeto utca 30.',
+ 2400,
+ 'Dunaujvaros'),
+
+(99,
+ 'Orokmozgo Sportegyesulet',
+ 'Uszo egyesulet Ivancsa varosban.',
+ 'kardanita@citromail.hu',
+ '+36-20-468-0405',
+ 'http://www.ivancsa.hu/gyors-linkek/sport/orokmozgo-sportegyesulet/',
+ 'http://www.ivancsa.hu/wp-content/uploads/2020/01/IVANCSA-LOGO-WEB.png',
+ 0.0, 0,
+ 'Fo utca 61/b',
+ 2454,
+ 'Ivancsa'),
+
+(100,
+ 'SwimmingERD',
+ 'A sport, ezen belul is az uszas jelentosege egyre meghatarozobb a cseperedo gyerekek eleteben. Az uszas alapsportag, amit mar egeszen pici gyermekkortol 120 eves korig serulesmentesen "uzhetunk". Bizonyitottan sokkal magasabb a rendszeresen uszo gyerekek monotonia turo kepessege, onfegyelme,...',
+ 'erdiuszo@gmail.com',
+ '+36-20-221-5502',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/SwimmingERD_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/seUx3jHohtq7Hvpox2rHj7Q908UbcvS6.png',
+ 0.0, 0,
+ 'Budai ut 7/A II. emelet 15.',
+ 2030,
+ 'Erd'),
+
+(101,
+ 'Zubor Uszosuli - Elso Tokoli Uszoegylet',
+ 'Az Elso Tokoli Diak Uszoegylet 2011. januarjaban alakult. Elnoke Zubor Attila, aki tobbek kozott ifjusagi Europa-bajnok, magyar bajnok, olimpiai 5. helyezett (4x100 m vegyesvalto, 2000), ketszeres vilagbajnoki 3., valamint Europa-bajnoki 2.es 3. helyezett elsportolo. Az egyesulet celjai koze...',
+ 'tokoli.uszoegylet@gmail.com',
+ '+36-20-953-0686',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Zubor_Uszosuli___Elso_Tokoli_Uszoegylet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/t4b2Eu5TaA3YRFCJHQNt90GkdTgPRBea.jpg',
+ 0.0, 0,
+ 'Kisfaludy utca 12.',
+ 2316,
+ 'Tokol'),
+
+(102,
+ 'Balaton Vizilabda Klub',
+ 'uszas, vizilabda oktatas 3 eves kortol info: Kerekes Csongor +36307575850',
+ 'kerekes.csongor@balatonvizilabda.hu',
+ '+36-30-757-5850',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Balaton_Vizilabda_Klub_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/-qrN13jvWvG5msmawJKDOeb_CKO8pb6_.jpg',
+ 0.0, 0,
+ 'Sorhaz u. 1/4.',
+ 8184,
+ 'Balatonfuzfo'),
+
+(103,
+ 'Tatabanyai Vizmu Sportegyesulet',
+ 'Celjaink: - a tatabanyai vizilabda utanpotlasanak es felnott csapatanak megreformalasa es fejlesztese - a hazai nevelesu jatekosokkal felallo garda ujra melto helyre keruljon a varos sporteleteben es a magyar vizlabdaban - utanpotlasunk versenyeztetese az orszagos bajnoksagokban , amely...',
+ 'tvseiroda@gmail.com',
+ '+36-20-285-6830',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Tatabanyai_Vizmu_Sportegyesulet_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/I5Qwls0ZxRtu2i4AcWGYZnp2i0JkR8ne.jpg',
+ 0.0, 0,
+ 'Cseri utca 30.',
+ 2800,
+ 'Tatabanya'),
+
+(104,
+ 'Dunaujvarosi Foiskola Vizilabda Egyesulet',
+ 'Vizilabda egyesulet Dunaujvaros varosban.',
+ 'dfvemedia@gmail.com',
+ '+36-30-277-8833',
+ 'https://dfve.eu/',
+ 'https://dfve.eu/wp-content/uploads/2023/02/logo.svg',
+ 0.0, 0,
+ 'Tancsics Mihaly ut 1/A',
+ 2400,
+ 'Dunaujvaros'),
+
+(105,
+ 'Oxigen Uszo-es Sportsuli',
+ 'Uszo egyesulet Pilisvorosvar varosban.',
+ 'brucknerrita@gmail.com',
+ '+36-30-636-4385',
+ 'https://www.oxigenuszosuli.hu/',
+ 'https://www.oxigenuszosuli.hu/assets/img/kezdolap/logo.png',
+ 0.0, 0,
+ 'Iskola utca 19.',
+ 2085,
+ 'Pilisvorosvar'),
+
+(106,
+ 'Gulipania alkoto muhely',
+ 'Alkoto muhely Veszpremben: keramia szakkor es workshopok, festes, kotetlen alkotas felnotteknek es gyerekeknek.',
+ 'orsirethy@gmail.com',
+ '+36-20-544-1118',
+ 'https://www.gulipandesign.com',
+ '',
+ 0.0, 0,
+ 'Brusznyai Arpad u. 18-20.',
+ 8200,
+ 'Veszprem'),
+
+(107,
+ 'Vox Mirabilis Kamarakorus',
+ 'Szekesfehervari kamarakorus rendszeres probakkal es koncertevaddal.',
+ 'voxmirabilis@gmail.com',
+ '+36-22-326-297',
+ 'https://voxmirabilis.hu',
+ '',
+ 0.0, 0,
+ 'Zsolt u. 30.',
+ 8000,
+ 'Szekesfehervar'),
+
+(108,
+ 'AL-BA Cook Fozoiskola',
+ 'Fozoiskola 2018 ota: fozotanfolyamok, gyerek fozoklub, csapatepito es privat fozesek.',
+ 'albacookfozoiskola@gmail.com',
+ '+36-30-220-5547',
+ 'https://fozzvelunk.hu',
+ '',
+ 0.0, 0,
+ 'Szechenyi u. 122.',
+ 8000,
+ 'Szekesfehervar'),
+
+(109,
+ 'Erdi VSE',
+ 'Elsodleges celunk az utanpotlas ujja szervezese es felepitese, minden korosztalyban.',
+ 'iroda.erdivse@gmail.com',
+ '+36-20-295-6534',
+ 'https://gyeresportolni.hu/egyesulet/reszletek/Erdi_VSE_2',
+ 'https://gyeresportolni.hu/images/uploads/logok/thumbs/hokGzd-AvpuroxNoT2iWO7DidGzUsDxP.jpg',
+ 0.0, 0,
+ 'Ercsi ut 34.',
+ 2030,
+ 'Erd'),
+
+(110,
+ 'Racalmas Sportegyesulet',
+ 'Remeljuk honlapunk jo eszkoz arra, hogy a RACALMAS SPORTEGYESULET-rol az erdeklodok mindent megtudjanak amire kivancsiak.',
+ 'info@racalmas-se.hu',
+ '+36-25-517-850',
+ 'https://racalmas-se.hu/?option=com_content&view=article&id=26&Itemid=138',
+ 'https://racalmas-se.hu/wp-content/uploads/2020/05/rse-logo.png',
+ 0.0, 0,
+ 'Szigetfo u. 11-13.',
+ 2459,
+ 'Racalmas'),
+
+(111,
+ 'Szekesfehervari Kertbarat Egyesulet',
+ 'Kertbarat egyesulet Szekesfehervar varosban.',
+ 'oazisviragbolt@oazisvirag.hu',
+ '+36-22-398-570',
+ 'https://oazisvirag.hu/kertbarat-egyesulet',
+ 'https://oazisvirag.hu/images/apple-touch-icon.png',
+ 0.0, 0,
+ 'Palotai ut 133.',
+ 8000,
+ 'Szekesfehervar');
+
+
+-- ============================================================
+-- CATEGORIES
+-- ============================================================
+-- Fo kategoriak (parentId = NULL): Szabadter (1), Mozgas (2),
+-- Kreativitas (3), Kozosseg (4) - a weboldal kartyainak megfeleloen.
+-- Alkategoriak: Szekesfehervar 50 km-es koreben aktiv hobbik.
+
+INSERT INTO categories
+(categoryId, name, parentId)
+VALUES
+-- Fo kategoriak
+(1, 'Szabadter', NULL),
+(2, 'Mozgas', NULL),
+(3, 'Kreativitas', NULL),
+(4, 'Kozosseg', NULL),
+
+-- Szabadter
+(5, 'Turazas', 1),
+(6, 'Futas', 1),
+(7, 'Kerekparozas', 1),
+(8, 'Maszas', 1),
+(9, 'Kajak-kenu', 1),
+(10, 'Evezes', 1),
+(11, 'Vitorlazas', 1),
+(12, 'SUP', 1),
+(13, 'Horgaszat', 1),
+(14, 'Lovaglas', 1),
+
+-- Mozgas
+(15, 'Fitness', 2),
+(16, 'Yoga', 2),
+(17, 'Pilates', 2),
+(18, 'Tanc', 2),
+(19, 'Atletika', 2),
+(20, 'Harcmuveszet', 2),
+(21, 'Labdajatekok', 2),
+(22, 'Vizisport', 2),
+(23, 'Tenisz', 2),
+(24, 'Asztalitenisz', 2),
+(25, 'Jegkorong', 2),
+(26, 'Korcsolyazas', 2),
+(27, 'Vivas', 2),
+
+-- Mozgas > Harcmuveszet
+(28, 'Judo', 20),
+(29, 'Karate', 20),
+(30, 'Kuzdosport', 20),
+
+-- Mozgas > Harcmuveszet > Kuzdosport
+(31, 'Box', 30),
+(32, 'Kick-box', 30),
+
+-- Mozgas > Labdajatekok
+(33, 'Csapatsport', 21),
+(34, 'Labdarugas', 21),
+(35, 'Kosarlabda', 21),
+(36, 'Kezilabda', 21),
+(37, 'Roplabda', 21),
+(38, 'Amerikai futball', 21),
+
+-- Mozgas > Vizisport
+(39, 'Uszas', 22),
+(40, 'Vizilabda', 22),
+
+-- Kreativitas
+(41, 'Festes es rajzolas', 3),
+(42, 'Keramia', 3),
+(43, 'Fotozas', 3),
+(44, 'Kezmuvesseg', 3),
+(45, 'Zene', 3),
+(46, 'Enek es korus', 3),
+(47, 'Szinjatszas', 3),
+(48, 'Fozes', 3),
+
+-- Kozosseg
+(49, 'Sakk', 4),
+(50, 'Tarsasjatek', 4),
+(51, 'Konyvklub', 4),
+(52, 'Nyelvi klub', 4),
+(53, 'Kvizest', 4),
+(54, 'Filmklub', 4),
+(55, 'Onkentesseg', 4),
+(56, 'Kerteszkedes', 4),
+(57, 'E-sport', 4);
+
+
+-- ============================================================
+-- CLUB CATEGORIES
+-- ============================================================
+
+INSERT INTO clubCategories
+(categories_categoryId, clubs_clubId)
+VALUES
+(15, 1),
+(16, 2),
+(18, 3),
+(23, 4),
+(19, 5),
+(6, 5),
+(49, 6),
+(22, 7),
+(39, 7),
+(14, 8),
+(21, 9),
+(33, 9),
+(35, 9),
+(21, 10),
+(33, 10),
+(34, 10),
+(21, 11),
+(33, 11),
+(36, 11),
+(22, 12),
+(39, 12);
+
+
+INSERT INTO clubCategories
+(categories_categoryId, clubs_clubId)
+VALUES
+(6, 13),
+(7, 13),
+(6, 14),
+(6, 15),
+(7, 16),
+(7, 17),
+(7, 18),
+(7, 19),
+(9, 20),
+(10, 20),
+(9, 21),
+(9, 22),
+(9, 23),
+(9, 24),
+(12, 25),
+(13, 26),
+(14, 27),
+(14, 28),
+(14, 29),
+(14, 30),
+(15, 31),
+(17, 31),
+(15, 32),
+(15, 33),
+(16, 34),
+(17, 35),
+(17, 36),
+(17, 37),
+(18, 38),
+(18, 39),
+(18, 40),
+(18, 41),
+(19, 42),
+(19, 43),
+(19, 44),
+(19, 45),
+(20, 46),
+(20, 47),
+(20, 48),
+(20, 49),
+(20, 50),
+(21, 51),
+(21, 52),
+(23, 53),
+(23, 54),
+(23, 55),
+(23, 56),
+(24, 57),
+(24, 58),
+(24, 59),
+(24, 60),
+(24, 61),
+(25, 62),
+(25, 63),
+(25, 64),
+(27, 65),
+(27, 66),
+(28, 67),
+(20, 67),
+(28, 68),
+(20, 68),
+(28, 69),
+(20, 69),
+(28, 70),
+(20, 70),
+(29, 71),
+(20, 71),
+(29, 72),
+(20, 72),
+(29, 73),
+(20, 73),
+(30, 74),
+(20, 74),
+(30, 75),
+(20, 75),
+(30, 76),
+(20, 76),
+(49, 76),
+(30, 77),
+(20, 77),
+(31, 78),
+(30, 78),
+(20, 78),
+(32, 79),
+(30, 79),
+(20, 79),
+(33, 80),
+(21, 80),
+(33, 81),
+(21, 81),
+(33, 82),
+(21, 82),
+(34, 83),
+(33, 83),
+(21, 83),
+(34, 84),
+(33, 84),
+(21, 84),
+(34, 85),
+(33, 85),
+(21, 85),
+(34, 86),
+(33, 86),
+(21, 86),
+(35, 87),
+(33, 87),
+(21, 87),
+(35, 88),
+(33, 88),
+(21, 88),
+(35, 89),
+(33, 89),
+(21, 89),
+(35, 90),
+(33, 90),
+(21, 90),
+(36, 91),
+(33, 91),
+(21, 91),
+(36, 92),
+(33, 92),
+(21, 92),
+(36, 93),
+(33, 93),
+(21, 93),
+(36, 94),
+(33, 94),
+(21, 94),
+(37, 95),
+(33, 95),
+(21, 95),
+(37, 96),
+(33, 96),
+(21, 96),
+(38, 97),
+(33, 97),
+(21, 97),
+(38, 98),
+(33, 98),
+(21, 98),
+(39, 99),
+(22, 99),
+(39, 100),
+(22, 100),
+(39, 101),
+(22, 101),
+(40, 102),
+(33, 102),
+(22, 102),
+(40, 103),
+(33, 103),
+(22, 103),
+(40, 104),
+(33, 104),
+(22, 104),
+(39, 105),
+(22, 105),
+(40, 105),
+(33, 105),
+(42, 106),
+(41, 106),
+(46, 107),
+(48, 108),
+(34, 109),
+(33, 109),
+(21, 109),
+(49, 109),
+(49, 110),
+(56, 111);
+
+
+-- ============================================================
+-- PRICE
+-- ============================================================
+-- Valos, a klubok weboldalan kozzetett arak (Ft). Az egyseg klubonkent
+-- eltero, lasd a sorok melletti megjegyzest. NULL = nincs nyilvanos ar.
+
+INSERT INTO price
+(priceId, adult, student, clubs_clubId)
+VALUES
+(1, 17000, 14000, 1),   -- havi berlet / diak-nyugdijas havi berlet
+(2, 4000, 2000, 2),     -- 90 perces hatha joga / 60 perces gimis joga (alkalmi)
+(3, 1500, NULL, 3),     -- kezdo tarsastanc: 15 000 Ft / 10 alkalom
+(4, 10795, NULL, 4),     -- csarnokpalya / ora, hetkoznap 8-16 (8 500 Ft + 27% AFA)
+(5, 14000, 12000, 5),   -- havi tagdij: felnott (U18-tol) / U10-U16 korosztaly (2026.07.01-tol)
+(6, 10000, NULL, 6),    -- eves tagsagi es oktatasi dij (testvereknek 50%)
+(7, 16000, 16000, 7),   -- uszotanfolyam havidij, heti 1 alkalom (nincs kulon diakar)
+(8, 5400, NULL, 8),     -- 25 perces kezdo csoportos lovaglas
+(9, 3000, NULL, 9),     -- allojegy 2026/27 (diak kedvezmeny csak berletre)
+(10, 1000, 500, 10),   -- 3. kategorias jegy 2026/27, teljes / diak-nyugdijas
+(11, 0, 0, 11),       -- 2026/27-ben ingyenes belepes a hazai meccsekre
+(12, 1400, 850, 12);    -- 4 oras felnott / kedvezmenyes uszodajegy
+
+
+INSERT INTO price
+(priceId, adult, student, clubs_clubId)
+VALUES
+(13, NULL, NULL, 13),       -- nincs nyilvanos ar
+(14, NULL, NULL, 14),       -- nincs nyilvanos ar
+(15, NULL, NULL, 15),       -- nincs nyilvanos ar
+(16, NULL, NULL, 16),       -- nincs nyilvanos ar
+(17, NULL, NULL, 17),       -- nincs nyilvanos ar
+(18, NULL, NULL, 18),       -- nincs nyilvanos ar
+(19, NULL, NULL, 19),       -- nincs nyilvanos ar
+(20, NULL, NULL, 20),       -- nincs nyilvanos ar
+(21, NULL, NULL, 21),       -- nincs nyilvanos ar
+(22, NULL, NULL, 22),       -- nincs nyilvanos ar
+(23, NULL, NULL, 23),       -- nincs nyilvanos ar
+(24, NULL, NULL, 24),       -- nincs nyilvanos ar
+(25, NULL, NULL, 25),       -- nincs nyilvanos ar
+(26, NULL, NULL, 26),       -- nincs nyilvanos ar
+(27, NULL, NULL, 27),       -- nincs nyilvanos ar
+(28, NULL, NULL, 28),       -- nincs nyilvanos ar
+(29, NULL, NULL, 29),       -- nincs nyilvanos ar
+(30, NULL, NULL, 30),       -- nincs nyilvanos ar
+(31, 23000, NULL, 31),      -- havi berlet (2026.02.01-tol)
+(32, NULL, NULL, 32),       -- nincs nyilvanos ar
+(33, 22000, NULL, 33),      -- havi korlatlan berlet
+(34, NULL, NULL, 34),       -- nincs nyilvanos ar
+(35, 7000, NULL, 35),       -- alkalmi jegy
+(36, 7500, NULL, 36),       -- alkalmi csoportos reformer ora
+(37, 1900, NULL, 37),       -- csoportos ora: 19 000 Ft / 10 alkalom
+(38, NULL, NULL, 38),       -- nincs nyilvanos ar
+(39, NULL, NULL, 39),       -- nincs nyilvanos ar
+(40, NULL, NULL, 40),       -- nincs nyilvanos ar
+(41, NULL, NULL, 41),       -- nincs nyilvanos ar
+(42, NULL, NULL, 42),       -- nincs nyilvanos ar
+(43, 8000, 8000, 43),       -- egyseges tagdij
+(44, NULL, NULL, 44),       -- nincs nyilvanos ar
+(45, NULL, NULL, 45),       -- nincs nyilvanos ar
+(46, NULL, NULL, 46),       -- nincs nyilvanos ar
+(47, NULL, NULL, 47),       -- nincs nyilvanos ar
+(48, NULL, NULL, 48),       -- nincs nyilvanos ar
+(49, NULL, NULL, 49),       -- nincs nyilvanos ar
+(50, NULL, NULL, 50),       -- nincs nyilvanos ar
+(51, NULL, NULL, 51),       -- nincs nyilvanos ar
+(52, NULL, NULL, 52),       -- nincs nyilvanos ar
+(53, NULL, NULL, 53),       -- nincs nyilvanos ar
+(54, NULL, NULL, 54),       -- nincs nyilvanos ar
+(55, NULL, NULL, 55),       -- nincs nyilvanos ar
+(56, NULL, NULL, 56),       -- nincs nyilvanos ar
+(57, NULL, NULL, 57),       -- nincs nyilvanos ar
+(58, NULL, NULL, 58),       -- nincs nyilvanos ar
+(59, NULL, NULL, 59),       -- nincs nyilvanos ar
+(60, NULL, NULL, 60),       -- nincs nyilvanos ar
+(61, NULL, NULL, 61),       -- nincs nyilvanos ar
+(62, NULL, NULL, 62),       -- nincs nyilvanos ar
+(63, NULL, NULL, 63),       -- nincs nyilvanos ar
+(64, NULL, NULL, 64),       -- nincs nyilvanos ar
+(65, NULL, NULL, 65),       -- nincs nyilvanos ar
+(66, NULL, NULL, 66),       -- nincs nyilvanos ar
+(67, NULL, NULL, 67),       -- nincs nyilvanos ar
+(68, NULL, NULL, 68),       -- nincs nyilvanos ar
+(69, NULL, NULL, 69),       -- nincs nyilvanos ar
+(70, NULL, NULL, 70),       -- nincs nyilvanos ar
+(71, NULL, NULL, 71),       -- nincs nyilvanos ar
+(72, NULL, NULL, 72),       -- nincs nyilvanos ar
+(73, NULL, NULL, 73),       -- nincs nyilvanos ar
+(74, NULL, NULL, 74),       -- nincs nyilvanos ar
+(75, NULL, NULL, 75),       -- nincs nyilvanos ar
+(76, NULL, NULL, 76),       -- nincs nyilvanos ar
+(77, NULL, NULL, 77),       -- nincs nyilvanos ar
+(78, NULL, NULL, 78),       -- nincs nyilvanos ar
+(79, NULL, NULL, 79),       -- nincs nyilvanos ar
+(80, NULL, NULL, 80),       -- nincs nyilvanos ar
+(81, NULL, NULL, 81),       -- nincs nyilvanos ar
+(82, NULL, NULL, 82),       -- nincs nyilvanos ar
+(83, NULL, NULL, 83),       -- nincs nyilvanos ar
+(84, NULL, NULL, 84),       -- nincs nyilvanos ar
+(85, NULL, NULL, 85),       -- nincs nyilvanos ar
+(86, NULL, NULL, 86),       -- nincs nyilvanos ar
+(87, NULL, NULL, 87),       -- nincs nyilvanos ar
+(88, NULL, NULL, 88),       -- nincs nyilvanos ar
+(89, NULL, NULL, 89),       -- nincs nyilvanos ar
+(90, NULL, NULL, 90),       -- nincs nyilvanos ar
+(91, 3100, 1900, 91),       -- normal merkozes jegy 2026/27, teljes / diak-nyugdijas
+(92, NULL, NULL, 92),       -- nincs nyilvanos ar
+(93, NULL, NULL, 93),       -- nincs nyilvanos ar
+(94, NULL, NULL, 94),       -- nincs nyilvanos ar
+(95, NULL, NULL, 95),       -- nincs nyilvanos ar
+(96, NULL, NULL, 96),       -- nincs nyilvanos ar
+(97, NULL, NULL, 97),       -- nincs nyilvanos ar
+(98, NULL, NULL, 98),       -- nincs nyilvanos ar
+(99, NULL, NULL, 99),       -- nincs nyilvanos ar
+(100, NULL, NULL, 100),     -- nincs nyilvanos ar
+(101, NULL, NULL, 101),     -- nincs nyilvanos ar
+(102, NULL, NULL, 102),     -- nincs nyilvanos ar
+(103, NULL, NULL, 103),     -- nincs nyilvanos ar
+(104, NULL, NULL, 104),     -- nincs nyilvanos ar
+(105, NULL, NULL, 105),     -- nincs nyilvanos ar
+(106, NULL, NULL, 106),     -- nincs nyilvanos ar
+(107, NULL, NULL, 107),     -- nincs nyilvanos ar
+(108, NULL, 5500, 108),     -- gyerek fozoklub / alkalom; felnott tanfolyam ara nem nyilvanos
+(109, NULL, NULL, 109),     -- nincs nyilvanos ar
+(110, NULL, NULL, 110),     -- nincs nyilvanos ar
+(111, 1000, NULL, 111);     -- eves tagdij
+
+
+-- ============================================================
+-- REVIEWS
+-- ============================================================
+
+INSERT INTO reviews
+(reviewId, rating, comment, createdAt, users_userId, clubs_clubId)
+VALUES
+(1, 5.0, 'Nagyon jo terem, tiszta es jol felszerelt.', '2026-01-10', 1, 1),
+(2, 4.5, 'Jo gepek es segitokesz edzok.', '2026-01-18', 2, 1),
+(3, 5.0, 'Nyugodt, kellemes studio, nagyon figyelmes oktato.', '2026-02-03', 3, 2),
+(4, 4.5, 'Kezdokent is nagyon jo elmeny volt, a gerinctrening sokat segitett.', '2026-02-14', 4, 2),
+(5, 4.0, 'Jo hangulatu tanfolyam, neha kicsit zsufolt a terem.', '2026-02-20', 5, 3),
+(6, 5.0, 'Parunkkal kezdokent is gyorsan belejottunk, nagyszeru oktatok.', '2026-03-01', 6, 3),
+(7, 5.0, 'A palyak nagyon jo allapotban vannak, az online foglalas kenyelmes.', '2026-03-05', 7, 4),
+(8, 4.5, 'Kedves szemelyzet, utana jol esik egy ebed az etteremben.', '2026-03-12', 8, 4),
+(9, 4.5, 'Profi edzok es jo atletikai palya.', '2026-03-20', 9, 5),
+(10, 5.0, 'A gyerekem nagyon szeret ide jarni, jo a kozosseg.', '2026-03-28', 10, 5),
+(11, 5.0, 'Baratsagos klub, kezdokkel is turelmesek.', '2026-04-02', 11, 6),
+(12, 4.5, 'Jo versenyek es szinvonalas oktatas.', '2026-04-09', 12, 6),
+(13, 4.5, 'Jo uszooktatok, a gyerekek sokat fejlodtek.', '2026-04-15', 13, 7),
+(14, 5.0, 'A gyerekek nagyon szeretik az edzeseket.', '2026-04-21', 14, 7),
+(15, 5.0, 'Nyugodt, jol kepzett lovak es turelmes oktatok.', '2026-05-01', 15, 8),
+(16, 4.5, 'Szep kornyezet, a nyari tabor is nagyon jo volt.', '2026-05-08', 1, 8),
+(17, 4.5, 'Jo hangulatu meccsek, lelkes szurkolok.', '2026-05-15', 2, 9),
+(18, 4.5, 'Az utanpotlas edzesek jol szervezettek.', '2026-05-21', 3, 9),
+(19, 5.0, 'Nagyszeru stadion es szuper meccshangulat.', '2026-06-01', 4, 10),
+(20, 5.0, 'Az akademian profi kepzest kap a fiam.', '2026-06-08', 5, 10),
+(21, 4.5, 'Jo edzesek es osszetarto csapat.', '2026-06-15', 6, 11),
+(22, 4.0, 'Az edzesek jok, de Fehervarrol messze van.', '2026-06-20', 7, 11),
+(23, 5.0, 'Tiszta uszoda, a tanmedence gyerekeknek idealis.', '2026-07-01', 8, 12),
+(24, 4.5, 'Jo palyak, csak csucsidoben zsufolt.', '2026-07-08', 9, 12),
+(25, 5.0, 'Minden alkalommal nagyon jol ereztem magam.', '2026-07-15', 10, 1);
+
+
+-- ============================================================
+-- MESSAGES
+-- ============================================================
+
+INSERT INTO messages
+(messageId, categoryId, chatType, message, createdAt, users_userId, clubs_clubId)
+VALUES
+(1, 15, 'GENERAL', 'Sziasztok! Erdeklodni szeretnek a berletekrol.', '2026-01-05 10:15:00', 1, 1),
+(2, 15, 'GENERAL', 'Szia Bence! A havi berlet 17 000 Ft, diakoknak 14 000 Ft.', '2026-01-05 11:00:00', 11, 1),
+(3, 16, 'GENERAL', 'Van lehetoseg kezdokent joga oran reszt venni?', '2026-01-12 09:20:00', 2, 2),
+(4, 16, 'GENERAL', 'Termeszetesen, a hatha joga orak kezdoknek is ajanlottak.', '2026-01-12 10:05:00', 12, 2),
+(5, 18, 'GENERAL', 'Par nelkul is lehet jelentkezni a kezdo tarsastanc tanfolyamra?', '2026-02-01 16:30:00', 3, 3),
+(6, 18, 'GENERAL', 'Igen, a tanfolyam 10 alkalmas, az elso ora elott kell fizetni.', '2026-02-01 17:10:00', 15, 3),
+(7, 23, 'GENERAL', 'Lehet palyat elore foglalni?', '2026-02-10 13:15:00', 4, 4),
+(8, 23, 'GENERAL', 'Igen, online vagy telefonon, alkalmi foglalas ket hettel elore.', '2026-02-10 13:45:00', 12, 4),
+(9, 19, 'GENERAL', 'Hany eves kortol lehet atletika edzesre jarni?', '2026-03-01 08:10:00', 5, 5),
+(10, 19, 'GENERAL', 'Tobb korosztalyban vannak utanpotlas csoportjaink, erdemes elotte egyeztetni.', '2026-03-01 08:30:00', 11, 5),
+(11, 49, 'GENERAL', 'Mikor vannak a kezdo sakk foglalkozasok?', '2026-03-10 15:20:00', 6, 6),
+(12, 49, 'GENERAL', 'Szerdan es penteken, kulon kezdo es halado csoportban.', '2026-03-10 16:00:00', 13, 6),
+(13, 39, 'GENERAL', 'Van gyermek uszooktatas is?', '2026-03-20 12:00:00', 7, 7),
+(14, 39, 'GENERAL', 'Igen, delutan 16 oratol kezdo, kozephalado es halado csoportokban.', '2026-03-20 12:35:00', 15, 7),
+(15, 14, 'GENERAL', 'Teljesen kezdokent is lehet jelentkezni lovaglasra?', '2026-04-01 18:10:00', 8, 8),
+(16, 14, 'GENERAL', 'Igen, futoszaras egyeni oraval vagy kezdo csoportos oraval indulunk.', '2026-04-01 19:00:00', 11, 8),
+(17, 35, 'GENERAL', 'Van kezdo utanpotlas kosarlabda csoport?', '2026-04-15 14:30:00', 9, 9),
+(18, 35, 'GENERAL', 'Igen, tobb korosztalyban vannak utanpotlas csapataink.', '2026-04-15 15:05:00', 15, 9),
+(19, 34, 'GENERAL', 'Hol lehet jegyet venni a hazai meccsekre?', '2026-05-01 17:20:00', 10, 10),
+(20, 34, 'GENERAL', 'Online a Jegymesteren vagy a stadion jegypenztaraban.', '2026-05-01 18:00:00', 12, 10);
+
+
+-- ============================================================
+-- ELLENORZO LEKERDEZESEK
+-- ============================================================
+
+-- Felhasznalok
+SELECT * FROM users;
+
+-- Klubok
+SELECT * FROM clubs;
+
+-- Kategoriak
+SELECT * FROM categories;
+
+-- Klubok kategoriakkal
+SELECT
+    c.name AS clubName,
+    cat.name AS categoryName
+FROM clubs c
+JOIN clubCategories cc
+    ON c.clubId = cc.clubs_clubId
+JOIN categories cat
+    ON cat.categoryId = cc.categories_categoryId
+ORDER BY c.name;
+
+-- Klubok es araik
+SELECT
+    c.name AS clubName,
+    p.adult,
+    p.student
+FROM clubs c
+JOIN price p
+    ON c.clubId = p.clubs_clubId
+ORDER BY c.name;
+
+-- Ertekelesek klubonkent
+SELECT
+    c.name AS clubName,
+    r.rating,
+    r.comment,
+    r.createdAt
+FROM reviews r
+JOIN clubs c
+    ON c.clubId = r.clubs_clubId
+ORDER BY c.name, r.createdAt;
+
+-- Uzenetek klubonkent
+SELECT
+    c.name AS clubName,
+    u.userName,
+    m.message,
+    m.createdAt
+FROM messages m
+JOIN users u
+    ON u.userId = m.users_userId
+JOIN clubs c
+    ON c.clubId = m.clubs_clubId
+ORDER BY m.createdAt;
