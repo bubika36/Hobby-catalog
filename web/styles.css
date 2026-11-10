@@ -810,6 +810,213 @@ h1 {
   }
 }
 
+/* ===== "Összes klub" subpage ===== */
+
+main > section[hidden] {
+  display: none !important;
+}
+
+.all-clubs-page {
+  padding: 56px 0 96px;
+  background: var(--bg);
+}
+
+.all-clubs-page .content-shell {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.all-clubs-back {
+  margin-bottom: 34px;
+}
+
+/* Category filter buttons: upper row = main, lower row = subcategories */
+.category-filters {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-row-sub {
+  padding-top: 14px;
+  border-top: 1px solid rgba(13, 63, 57, 0.12);
+}
+
+.filter-button {
+  border: 1px solid rgba(13, 63, 57, 0.2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--green-900);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.filter-button-main {
+  min-height: 44px;
+  padding: 0 20px;
+  font-size: 0.92rem;
+}
+
+.filter-button-sub {
+  min-height: 34px;
+  padding: 0 13px;
+  background: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+}
+
+.filter-button:hover {
+  border-color: var(--green-700);
+  background: rgba(13, 63, 57, 0.06);
+}
+
+.filter-button:focus-visible {
+  outline: 2px solid var(--green-700);
+  outline-offset: 2px;
+}
+
+.filter-button.is-active {
+  border-color: var(--green-900);
+  background: var(--green-900);
+  color: #fff;
+}
+
+.filter-summary {
+  margin: 0 0 30px;
+  color: rgba(29, 43, 42, 0.7);
+  font-size: 0.88rem;
+}
+
+/* Placeholder club results, grouped by subcategory */
+.club-results {
+  display: grid;
+  gap: 40px;
+}
+
+.club-group-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(13, 63, 57, 0.12);
+}
+
+.club-group-path {
+  margin: 0 0 4px;
+  color: var(--green-700);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.club-group h3 {
+  margin: 0;
+  color: var(--green-900);
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.club-group-count {
+  flex: 0 0 auto;
+  color: rgba(29, 43, 42, 0.6);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.club-placeholder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.club-placeholder {
+  overflow: hidden;
+  border: 1px solid rgba(13, 63, 57, 0.08);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 8px 20px rgba(8, 30, 26, 0.08);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.club-placeholder:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(8, 30, 26, 0.14);
+}
+
+.club-placeholder-image {
+  height: 110px;
+  background: linear-gradient(135deg, rgba(17, 64, 58, 0.15), rgba(17, 64, 58, 0.02)),
+    linear-gradient(140deg, #dfe9e4 0%, #b8cfc8 28%, #92a9a2 100%);
+}
+
+.club-placeholder-body {
+  display: grid;
+  gap: 6px;
+  padding: 14px 14px 16px;
+}
+
+.club-placeholder-tag {
+  justify-self: start;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(13, 63, 57, 0.08);
+  color: var(--green-800);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.club-placeholder h4 {
+  margin: 0;
+  color: var(--green-900);
+  font-size: 1rem;
+}
+
+.club-placeholder p {
+  margin: 0;
+  color: rgba(29, 43, 42, 0.6);
+  font-size: 0.78rem;
+}
+
+.skeleton-line {
+  display: block;
+  width: 70%;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: rgba(13, 63, 57, 0.08);
+}
+
+@media (max-width: 520px) {
+  .all-clubs-page {
+    padding: 36px 0 72px;
+  }
+
+  .club-placeholder-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .club-placeholder-image {
+    height: 80px;
+  }
+
+  .club-group h3 {
+    font-size: 1.7rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
