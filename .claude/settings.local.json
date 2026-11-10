@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "PowerShell(python -m http.server 5500 --bind 127.0.0.1 --directory \"c:\\\\Users\\\\szucs.alex.711\\\\Documents\\\\Hobby-catalog\\\\web\")",
-      "PowerShell(\\(Invoke-WebRequest -UseBasicParsing http://127.0.0.1:5500/index.html\\).StatusCode)"
-    ]
-  }
-}
