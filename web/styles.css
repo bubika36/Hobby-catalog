@@ -4,11 +4,8 @@
   --green-900: #0d3f39;
   --green-800: #144f45;
   --green-700: #1a6a59;
-  --harrods-green: #006633;
   --header-gradient: linear-gradient(135deg, var(--green-900) 0%, var(--green-800) 55%, #0d463d 100%);
-  --green-200: rgba(255, 255, 255, 0.18);
   --text: #1d2b2a;
-  --muted: #e7f1ee;
   --shadow: rgba(8, 30, 26, 0.15);
 }
 
@@ -61,15 +58,6 @@ img {
   display: none;
 }
 
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  color: #fff;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
 .brand-mark {
   width: 44px;
   height: 44px;
@@ -117,17 +105,6 @@ img {
   background: rgba(255, 255, 255, 0.16);
 }
 
-.sponsor-badge {
-  padding: 8px 18px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .page-title-wrap {
   display: flex;
   align-items: center;
@@ -154,16 +131,12 @@ h1 {
   font-style: normal;
 }
 
-.content-shell {
-  padding-top: 28px;
-  padding-bottom: 60px;
-}
-
 .hero {
   position: relative;
   display: flex;
-  min-height: min(720px, calc(100svh - 100px));
+  /* vh fallback first, for browsers without svh (the height with the mobile browser bars shown) */
   min-height: max(570px, min(720px, calc(100vh - 100px)));
+  min-height: max(570px, min(720px, calc(100svh - 100px)));
   overflow: hidden;
   isolation: isolate;
   background: #183d31;
@@ -286,13 +259,19 @@ h1 {
   transform: translateY(-2px);
 }
 
-.button-primary {
+.button-primary,
+.button-light {
   background: #f3f1e9;
   color: var(--green-900);
 }
 
-.button-primary:hover {
+.button-primary:hover,
+.button-light:hover {
   background: #fff;
+}
+
+.button-light {
+  flex: 0 0 auto;
 }
 
 .button-ghost {
@@ -409,12 +388,6 @@ h1 {
 .discover-section {
   padding: 84px 0 96px;
   background: var(--bg);
-}
-
-.discover-section .content-shell,
-.clubs-callout .content-shell {
-  padding-top: 0;
-  padding-bottom: 0;
 }
 
 .section-heading {
@@ -575,16 +548,6 @@ h1 {
 .clubs-callout h2 {
   max-width: 600px;
   color: #fff;
-}
-
-.button-light {
-  flex: 0 0 auto;
-  background: #f3f1e9;
-  color: var(--green-900);
-}
-
-.button-light:hover {
-  background: #fff;
 }
 
 .about-section {
@@ -812,20 +775,10 @@ h1 {
 
 /* ===== "Összes klub" subpage ===== */
 
-main > section[hidden] {
-  display: none !important;
-}
-
 .all-clubs-page,
 .club-page {
   padding: 56px 0 96px;
   background: var(--bg);
-}
-
-.all-clubs-page .content-shell,
-.club-page .content-shell {
-  padding-top: 0;
-  padding-bottom: 0;
 }
 
 .all-clubs-back,
@@ -1243,58 +1196,6 @@ main > section[hidden] {
   }
 }
 
-.club-card {
-  max-width: 420px;
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(13, 63, 57, 0.08);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 15px 35px var(--shadow);
-}
-
-.club-image {
-  height: 200px;
-  background: linear-gradient(135deg, rgba(17, 64, 58, 0.15), rgba(17, 64, 58, 0.02)),
-    linear-gradient(140deg, #dfe9e4 0%, #b8cfc8 28%, #92a9a2 100%);
-}
-
-.club-info {
-  padding: 22px 20px 18px;
-}
-
-.club-info h2 {
-  margin: 0 0 8px;
-  font-size: clamp(1.6rem, 2vw, 2rem);
-  color: var(--green-900);
-}
-
-.club-info p {
-  margin: 0;
-  color: rgba(29, 43, 42, 0.8);
-  font-size: 1rem;
-}
-
-.club-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 18px;
-}
-
-.club-actions a {
-  display: inline-block;
-  padding: 10px 16px;
-  border-radius: 999px;
-  text-decoration: none;
-  font-weight: 600;
-  color: var(--green-900);
-  background: rgba(17, 64, 58, 0.08);
-  transition: 0.2s ease;
-}
-
-.club-actions a:hover {
-  background: rgba(17, 64, 58, 0.14);
-}
-
 .chat-bubble {
   position: fixed;
   right: 24px;
@@ -1405,34 +1306,8 @@ main > section[hidden] {
     bottom: 84px;
   }
 
-  .topbar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 18px;
-    justify-content: flex-start;
-  }
-
-  .main-nav {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    margin-left: 0;
-    white-space: normal;
-  }
-
-  .main-nav a {
-    padding: 10px 8px;
-    font-size: 0.78rem;
-    text-align: center;
-  }
-
-  .sponsor-badge {
-    font-size: 0.62rem;
-  }
-
   .page-title-wrap {
     gap: 12px;
-    flex-shrink: 0;
   }
 
   h1 {
@@ -1466,9 +1341,6 @@ main > section[hidden] {
 
 @media screen and (orientation: landscape) and (min-width: 520px) and (max-width: 900px) and (max-height: 500px) {
   .topbar {
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
     padding-top: 10px;
     padding-bottom: 10px;
   }
@@ -1487,29 +1359,11 @@ main > section[hidden] {
   h1 {
     font-size: 38px;
   }
-
-  .main-nav {
-    display: flex;
-    flex: 0 1 auto;
-    justify-content: flex-end;
-    gap: 4px;
-    margin-left: auto;
-  }
-
-  .main-nav a {
-    padding: 7px 6px;
-    font-size: 0.7rem;
-  }
 }
 
 @media (max-width: 760px), screen and (orientation: landscape) and (min-width: 520px) and (max-width: 900px) and (max-height: 500px) {
   .topbar {
-    position: relative;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
     gap: 12px;
-    overflow: visible;
   }
 
   .header-controls {

@@ -3,16 +3,26 @@
    Uses the shared categories, clubs and helpers from script.js.
    ============================================================ */
 
-const allClubsPage = document.querySelector("#all-clubs-page");
+// all-clubs.html holds the page layout; this adds the filter buttons and the clubs.
+const parentFilterRow = document.querySelector(".filter-row-main");
+const subFilterRow = document.querySelector(".filter-row-sub");
+const filterSummary = document.querySelector(".filter-summary");
+const clubResults = document.querySelector(".club-results");
+
+// "all-clubs.html" -> all clubs, "all-clubs.html?category=2" -> preselect main category 2 (Mozgás).
+const preselectedCategory = categoryById.get(Number(new URLSearchParams(window.location.search).get("category")));
 
 // Selected filters: parentId = upper row (main category), categoryId = lower row (subcategory).
-const allClubsFilter = { parentId: null, categoryId: null };
-let allClubsUi = null;
+const allClubsFilter = {
+  parentId: preselectedCategory?.parentId === null ? preselectedCategory.id : null,
+  categoryId: null,
+};
 
+// category = null is the "Összes" button.
 const createFilterButton = (category, className) => {
-  const button = createElement("button", `filter-button ${className}`, category ? category.name : "Összes");
+  const button = createElement("button", `filter-button ${className}`, category?.name ?? "Összes");
   button.type = "button";
-  button.dataset.categoryId = category ? String(category.id) : "";
+  button.dataset.categoryId = category?.id ?? "";
   return button;
 };
 
@@ -22,6 +32,12 @@ const setPressed = (button, isActive) => {
   button.classList.toggle("is-active", isActive);
   button.setAttribute("aria-pressed", String(isActive));
 };
+
+// Upper row: main categories, lower row: all subcategories.
+const parentButtons = [null, ...parentCategories].map((category) => createFilterButton(category, "filter-button-main"));
+const subButtons = subCategories.map((category) => createFilterButton(category, "filter-button-sub"));
+parentFilterRow.append(...parentButtons);
+subFilterRow.append(...subButtons);
 
 // The whole card is a link to the club's subpage.
 const createClubPlaceholder = (club, category) => {
@@ -65,23 +81,22 @@ const createClubGroup = (category, clubs) => {
 };
 
 const updateAllClubsView = () => {
-  const { parentButtons, subButtons, summary, results } = allClubsUi;
   const { parentId, categoryId } = allClubsFilter;
 
   parentButtons.forEach((button) => setPressed(button, readCategoryId(button) === parentId));
 
-  // Lower row: every subcategory, or only the selected main category's subcategories.
-  const visibleSubIds = parentId === null ? null : new Set(getSubtreeIds(parentId));
+  // Lower row: only the selected main category's subcategories (all of them when none is selected).
+  const visibleSubIds = new Set(getSubtreeIds(parentId));
   subButtons.forEach((button) => {
     const id = readCategoryId(button);
-    button.hidden = visibleSubIds !== null && !visibleSubIds.has(id);
+    button.hidden = !visibleSubIds.has(id);
     setPressed(button, id === categoryId);
   });
 
   const activeId = categoryId ?? parentId;
-  const matchingIds = activeId === null ? null : new Set(getSubtreeIds(activeId));
+  const matchingIds = new Set(getSubtreeIds(activeId));
   const groups = subCategories
-    .filter((category) => matchingIds === null || matchingIds.has(category.id))
+    .filter((category) => matchingIds.has(category.id))
     .map((category) => ({
       category,
       clubs: placeholderClubs.filter((club) => club.categoryId === category.id),
@@ -89,81 +104,32 @@ const updateAllClubsView = () => {
     .filter((group) => group.clubs.length);
 
   const clubCount = groups.reduce((sum, group) => sum + group.clubs.length, 0);
-  const label = activeId === null ? "Minden kategória" : categoryById.get(activeId).name;
-  summary.textContent = `${label}: ${clubCount} klub, ${groups.length} kategóriában`;
+  const label = categoryById.get(activeId)?.name ?? "Minden kategória";
+  filterSummary.textContent = `${label}: ${clubCount} klub, ${groups.length} kategóriában`;
 
-  results.replaceChildren(...groups.map(({ category, clubs }) => createClubGroup(category, clubs)));
+  clubResults.replaceChildren(...groups.map(({ category, clubs }) => createClubGroup(category, clubs)));
 };
 
-const renderAllClubsPage = () => {
-  const shell = createElement("div", "content-shell");
-
-  const backLink = createElement("a", "text-link all-clubs-back", "← Vissza a kezdőlapra");
-  backLink.href = "index.html#home";
-
-  const heading = createElement("div", "section-heading");
-  const headingCopy = createElement("div");
-  const title = createElement("h2", "", "Összes klub");
-  title.id = "all-clubs-title";
-  headingCopy.append(createElement("p", "section-kicker", "Böngéssz kategóriák szerint"), title);
-  heading.append(headingCopy);
-
-  // Upper row: main categories (parentId = null)
-  const parentRow = createElement("div", "filter-row filter-row-main");
-  parentRow.setAttribute("role", "group");
-  parentRow.setAttribute("aria-label", "Fő kategóriák");
-  const parentButtons = [null, ...parentCategories].map((category) =>
-    createFilterButton(category, "filter-button-main"),
-  );
-  parentRow.append(...parentButtons);
-
-  // Lower row: all subcategories
-  const subRow = createElement("div", "filter-row filter-row-sub");
-  subRow.setAttribute("role", "group");
-  subRow.setAttribute("aria-label", "Alkategóriák");
-  const subButtons = subCategories.map((category) => createFilterButton(category, "filter-button-sub"));
-  subRow.append(...subButtons);
-
-  const filters = createElement("div", "category-filters");
-  filters.append(parentRow, subRow);
-
-  const summary = createElement("p", "filter-summary");
-  summary.setAttribute("aria-live", "polite");
-
-  const results = createElement("div", "club-results");
-
-  shell.append(backLink, heading, filters, summary, results);
-  allClubsPage.append(shell);
-
-  parentRow.addEventListener("click", (event) => {
-    const button = event.target.closest(".filter-button");
-    if (!button) return;
-    const id = readCategoryId(button);
-    allClubsFilter.parentId = id === allClubsFilter.parentId ? null : id;
-    allClubsFilter.categoryId = null;
-    updateAllClubsView();
-  });
-
-  subRow.addEventListener("click", (event) => {
-    const button = event.target.closest(".filter-button");
-    if (!button) return;
-    const id = readCategoryId(button);
-    if (id === allClubsFilter.categoryId) {
-      allClubsFilter.categoryId = null; // second click clears the subcategory, keeps the main one
-    } else {
-      allClubsFilter.categoryId = id;
-      allClubsFilter.parentId = getRootId(categoryById.get(id));
-    }
-    updateAllClubsView();
-  });
-
-  allClubsUi = { parentButtons, subButtons, summary, results };
+parentFilterRow.addEventListener("click", (event) => {
+  const button = event.target.closest(".filter-button");
+  if (!button) return;
+  const id = readCategoryId(button);
+  allClubsFilter.parentId = id === allClubsFilter.parentId ? null : id;
+  allClubsFilter.categoryId = null;
   updateAllClubsView();
-};
+});
 
-// "all-clubs.html" -> all clubs, "all-clubs.html?category=2" -> preselect main category 2 (Mozgás).
-const preselectedCategory = categoryById.get(Number(new URLSearchParams(window.location.search).get("category")));
-allClubsFilter.parentId =
-  preselectedCategory && preselectedCategory.parentId === null ? preselectedCategory.id : null;
+subFilterRow.addEventListener("click", (event) => {
+  const button = event.target.closest(".filter-button");
+  if (!button) return;
+  const id = readCategoryId(button);
+  if (id === allClubsFilter.categoryId) {
+    allClubsFilter.categoryId = null; // second click clears the subcategory, keeps the main one
+  } else {
+    allClubsFilter.categoryId = id;
+    allClubsFilter.parentId = getRootId(categoryById.get(id));
+  }
+  updateAllClubsView();
+});
 
-renderAllClubsPage();
+updateAllClubsView();

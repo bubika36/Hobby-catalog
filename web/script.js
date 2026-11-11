@@ -34,22 +34,20 @@ const mobileHeaderQuery = window.matchMedia(
   "(max-width: 760px), (orientation: landscape) and (min-width: 520px) and (max-width: 900px) and (max-height: 500px)",
 );
 
-const syncHeaderForViewport = () => {
-  if (!mobileHeaderQuery.matches) {
-    siteHeader.classList.remove("is-collapsed");
-    headerToggle.setAttribute("aria-expanded", "true");
-    headerToggle.setAttribute("aria-label", "Fejléc összecsukása");
-  }
+const setHeaderExpanded = (isExpanded) => {
+  siteHeader.classList.toggle("is-collapsed", !isExpanded);
+  headerToggle.setAttribute("aria-expanded", String(isExpanded));
+  headerToggle.setAttribute("aria-label", isExpanded ? "Fejléc összecsukása" : "Fejléc kibontása");
 };
 
 headerToggle.addEventListener("click", () => {
-  const isExpanded = headerToggle.getAttribute("aria-expanded") === "true";
-  headerToggle.setAttribute("aria-expanded", String(!isExpanded));
-  headerToggle.setAttribute("aria-label", isExpanded ? "Fejléc kibontása" : "Fejléc összecsukása");
-  siteHeader.classList.toggle("is-collapsed", isExpanded);
+  setHeaderExpanded(headerToggle.getAttribute("aria-expanded") !== "true");
 });
 
-mobileHeaderQuery.addEventListener("change", syncHeaderForViewport);
+// The header can only be collapsed on small screens, so leaving them expands it again.
+mobileHeaderQuery.addEventListener("change", () => {
+  if (!mobileHeaderQuery.matches) setHeaderExpanded(true);
+});
 
 const hero = document.querySelector(".hero");
 
@@ -130,7 +128,7 @@ if (hero) {
 const ALL_CLUBS_PAGE = "all-clubs.html";
 const CLUB_PAGE = "club.html";
 
-// Hardcoded copy of the `categories` table in hobby_catalog.sql (categoryId, name, parentId).
+// Hardcoded copy of the `categories` table in hobby_catalog_data.sql (categoryId, name, parentId).
 // TODO: replace with an API call once the backend exists.
 const categories = [
   // Fő kategóriák
@@ -216,6 +214,7 @@ const subCategories = categories.filter((category) => category.parentId !== null
 const getChildren = (parentId) => categories.filter((category) => category.parentId === parentId);
 
 // The category itself plus every category below it (e.g. Harcművészet -> Judo, ..., Box).
+// Main categories have parentId null, so getSubtreeIds(null) contains every category.
 const getSubtreeIds = (categoryId) => [
   categoryId,
   ...getChildren(categoryId).flatMap((child) => getSubtreeIds(child.id)),
@@ -223,13 +222,8 @@ const getSubtreeIds = (categoryId) => [
 
 // Top-down list of the category's parents, e.g. Box -> [Mozgás, Harcművészet, Küzdősport].
 const getAncestors = (category) => {
-  const ancestors = [];
-  let current = categoryById.get(category.parentId);
-  while (current) {
-    ancestors.unshift(current);
-    current = categoryById.get(current.parentId);
-  }
-  return ancestors;
+  const parent = categoryById.get(category.parentId);
+  return parent ? [...getAncestors(parent), parent] : [];
 };
 
 const getRootId = (category) => (getAncestors(category)[0] ?? category).id;
