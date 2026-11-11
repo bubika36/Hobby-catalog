@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Klub – Hobby Catalog</title>
+    <!-- Leaflet: the club's map (OpenStreetMap tiles) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="topbar">
+        <div class="page-title-wrap">
+          <div class="brand-mark title-mark" aria-hidden="true">HC</div>
+          <h1>Hobby Catalog</h1>
+        </div>
+        <div class="header-controls" id="header-controls">
+          <nav class="main-nav" aria-label="Fő navigáció">
+            <a href="index.html#home">Kezdőlap</a>
+            <a href="all-clubs.html">Klubok</a>
+            <a href="index.html#about">Rólunk</a>
+          </nav>
+          <details class="mobile-menu">
+            <summary>☰ Menü</summary>
+            <nav class="mobile-dropdown" aria-label="Mobil navigáció">
+              <a href="index.html#home">Kezdőlap</a>
+              <a href="index.html#clubs">Klubok</a>
+              <a href="index.html#about">Rólunk</a>
+            </nav>
+          </details>
+        </div>
+        <button class="header-toggle" type="button" aria-label="Fejléc összecsukása" aria-expanded="true" aria-controls="header-controls">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="club-page" id="club-page" aria-labelledby="club-title">
+        <div class="content-shell">
+          <a class="text-link club-page-back" href="all-clubs.html">← Vissza a klubokhoz</a>
+
+          <!-- club.js adds the club's header above this and the other detail cards around the map -->
+          <div class="club-detail-layout">
+            <div class="club-detail-column" data-club-main-column></div>
+            <div class="club-detail-column" data-club-side-column>
+              <section class="club-detail-card">
+                <h3>Térkép</h3>
+                <!-- #map: club.js puts the club's map here; keep it empty in the HTML (the CSS placeholder uses :empty) -->
+                <div class="club-map" id="map"></div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <button class="chat-bubble" type="button" aria-label="Chat" aria-expanded="false" aria-controls="chat-popup">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M4.5 5.5A3.5 3.5 0 0 1 8 2h8a3.5 3.5 0 0 1 3.5 3.5v7A3.5 3.5 0 0 1 16 16h-5.2l-4.6 3.4c-.7.5-1.7 0-1.7-.9V16a3.5 3.5 0 0 1-2-3.2v-7.3Z" />
+        <circle cx="8" cy="9" r="1" />
+        <circle cx="12" cy="9" r="1" />
+        <circle cx="16" cy="9" r="1" />
+      </svg>
+    </button>
+
+    <dialog class="chat-popup" id="chat-popup" aria-labelledby="chat-title">
+      <div class="chat-popup-header">
+        <h2 id="chat-title">Hobby Catalog chat</h2>
+        <button class="chat-popup-close" type="button" aria-label="Bezárás">&times;</button>
+      </div>
+      <p>Szia! A közösségi chat hamarosan elérhető lesz.</p>
+    </dialog>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="script.js"></script>
+    <script src="club.js"></script>
+  </body>
+</html>

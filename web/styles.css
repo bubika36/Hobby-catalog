@@ -1166,11 +1166,13 @@ main > section[hidden] {
   font-size: 1.3rem;
 }
 
-/* #map: filled by the OpenStreetMap integration; shows a placeholder until then */
+/* #map: Leaflet map from club.js; shows a placeholder while empty */
 .club-map {
   height: 320px;
   overflow: hidden;
   border-radius: 14px;
+  /* keeps Leaflet's z-indexes (up to 1000) below the sticky header and the chat */
+  isolation: isolate;
   background: linear-gradient(140deg, #dfe9e4 0%, #b8cfc8 28%, #92a9a2 100%);
 }
 
