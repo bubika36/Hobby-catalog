@@ -229,21 +229,45 @@ const getAncestors = (category) => {
 
 const getRootId = (category) => (getAncestors(category)[0] ?? category).id;
 
-// Placeholder clubs: 5 or 6 for every subcategory.
+// Placeholder clubs: 5 or 6 for every subcategory, with the same fields as the
+// `clubs` and `price` tables so the club page can show every detail.
 // TODO: replace with clubs from the API.
+const placeholderStreets = ["Budai út", "Palotai út", "Berényi út", "Prohászka Ottokár út"];
+
 const placeholderClubs = subCategories.flatMap((category) =>
-  Array.from({ length: 5 + (category.id % 2) }, (_, index) => ({
-    id: `${category.id}-${index + 1}`,
-    name: `${category.name} klub ${String(index + 1).padStart(2, "0")}`,
-    categoryId: category.id,
-  })),
+  Array.from({ length: 5 + (category.id % 2) }, (_, index) => {
+    const id = `${category.id}-${index + 1}`;
+    const seed = category.id * 7 + index * 3;
+    const adultPrice = 3000 + (seed % 9) * 1000;
+    return {
+      id,
+      name: `${category.name} klub ${String(index + 1).padStart(2, "0")}`,
+      categoryId: category.id,
+      description:
+        "Barátságos közösség kezdőknek és haladóknak egyaránt. Rendszeres foglalkozások, tapasztalt vezetők és jó hangulat várnak – gyere el egy próbaalkalomra!",
+      email: `klub-${id}@example.com`,
+      phone: `+36-30-000-${String(seed).padStart(4, "0")}`,
+      websiteURL: `https://example.com/klub-${id}`,
+      logoURL: "",
+      rating: 4 + (seed % 11) / 10,
+      reviewCount: seed % 25,
+      address: `${placeholderStreets[seed % placeholderStreets.length]} ${(seed % 120) + 1}.`,
+      zipCode: 8000,
+      city: "Székesfehérvár",
+      price: { adult: adultPrice, student: index % 3 === 2 ? null : adultPrice - 1000 },
+    };
+  }),
 );
 
+const clubById = new Map(placeholderClubs.map((club) => [club.id, club]));
+
 const ALL_CLUBS_HASH = "#osszes-klub";
+const CLUB_HASH = "#klub";
 const DEFAULT_TITLE = document.title;
 const allClubsPage = document.querySelector("#all-clubs-page");
+const clubPage = document.querySelector("#club-page");
 const landingSections = [...document.querySelectorAll("main > section")].filter(
-  (section) => section !== allClubsPage,
+  (section) => section !== allClubsPage && section !== clubPage,
 );
 let allClubsRendered = false;
 
@@ -272,8 +296,10 @@ const setPressed = (button, isActive) => {
   button.setAttribute("aria-pressed", String(isActive));
 };
 
+// The whole card is a link to the club's subpage.
 const createClubPlaceholder = (club, category) => {
-  const card = createElement("article", "club-placeholder");
+  const card = createElement("a", "club-placeholder");
+  card.href = `${CLUB_HASH}/${club.id}`;
 
   const image = createElement("div", "club-placeholder-image");
   image.setAttribute("aria-hidden", "true");
@@ -285,7 +311,7 @@ const createClubPlaceholder = (club, category) => {
   body.append(
     createElement("span", "club-placeholder-tag", category.name),
     createElement("h4", "", club.name),
-    createElement("p", "", "Helyszín és részletek hamarosan"),
+    createElement("p", "", club.city),
     line,
   );
 
@@ -411,6 +437,172 @@ const renderAllClubsPage = () => {
   updateAllClubsView();
 };
 
+/* ============================================================
+   Club subpage (hash route: #klub/<clubId>)
+   ============================================================ */
+
+// Created once and moved into every rendered club page, so the OpenStreetMap
+// integration can keep a single map bound to #map. data-address = current club.
+const clubMap = createElement("div", "club-map");
+clubMap.id = "map";
+
+// The club page's back link returns to the list the club was opened from;
+// going back keeps that list's filters and scroll position.
+const clubListReturn = { hash: ALL_CLUBS_HASH, scrollY: 0 };
+
+const formatNumber = (value, fractionDigits = 0) =>
+  Number(value).toLocaleString("hu-HU", {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  });
+
+const formatPrice = (amount) => {
+  if (amount === null || amount === undefined) return "Nincs megadva";
+  return Number(amount) === 0 ? "Ingyenes" : `${formatNumber(amount)} Ft`;
+};
+
+const createLink = (href, text) => {
+  const link = createElement("a", "", text);
+  link.href = href;
+  return link;
+};
+
+// Websites are uploaded by the clubs themselves, so only http(s) URLs become links.
+const createWebsiteLink = (url) => {
+  if (!/^https?:\/\//i.test(url)) return url;
+  const link = createLink(url, url.replace(/^https?:\/\//i, "").replace(/\/$/, ""));
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  return link;
+};
+
+const createDetailCard = (title, ...content) => {
+  const card = createElement("section", "club-detail-card");
+  card.append(createElement("h3", "", title), ...content);
+  return card;
+};
+
+// <dl> from [label, text or element] pairs.
+const createDetailList = (rows) => {
+  const list = createElement("dl", "club-detail-list");
+  rows.forEach(([label, value]) => {
+    const row = createElement("div");
+    const description = createElement("dd");
+    description.append(value);
+    row.append(createElement("dt", "", label), description);
+    list.append(row);
+  });
+  return list;
+};
+
+const createPrices = (price) => {
+  const { adult = null, student = null } = price ?? {};
+  if (adult === null && student === null) {
+    return createElement("p", "club-detail-text", "A klub nem adott meg nyilvános árat.");
+  }
+  const grid = createElement("div", "club-price-grid");
+  [
+    ["Felnőtt", adult],
+    ["Diák", student],
+  ].forEach(([label, amount]) => {
+    const tile = createElement("div", "club-price");
+    tile.append(createElement("span", "", label), createElement("strong", "", formatPrice(amount)));
+    grid.append(tile);
+  });
+  return grid;
+};
+
+// Club logo over the club's first letter, which shows when there is no logo or it fails to load.
+const createClubLogo = (club) => {
+  const logo = createElement("div", "club-detail-logo", club.name.trim().charAt(0).toUpperCase());
+  logo.setAttribute("aria-hidden", "true");
+  if (club.logoURL) {
+    const image = createElement("img");
+    image.alt = "";
+    image.src = club.logoURL;
+    image.addEventListener("error", () => image.remove());
+    logo.append(image);
+  }
+  return logo;
+};
+
+const createClubHeader = (club) => {
+  const category = categoryById.get(club.categoryId);
+
+  const title = createElement("h2", "", club.name);
+  title.id = "club-title";
+
+  const rating = createElement("p", "club-detail-rating");
+  if (club.reviewCount) {
+    const star = createElement("span", "club-detail-star", "★");
+    star.setAttribute("aria-hidden", "true");
+    rating.append(star, " ", createElement("strong", "", formatNumber(club.rating, 1)), ` · ${club.reviewCount} értékelés`);
+  } else {
+    rating.textContent = "Még nincs értékelés";
+  }
+
+  const copy = createElement("div");
+  copy.append(
+    createElement("p", "club-detail-path", [...getAncestors(category), category].map((item) => item.name).join(" › ")),
+    title,
+    rating,
+  );
+
+  const header = createElement("header", "club-detail-header");
+  header.append(createClubLogo(club), copy);
+  return header;
+};
+
+const renderClubPage = (club) => {
+  const shell = createElement("div", "content-shell");
+
+  const backLink = createElement("a", "text-link club-page-back", "← Vissza a klubokhoz");
+  backLink.href = clubListReturn.hash;
+  shell.append(backLink);
+
+  if (!club) {
+    const title = createElement("h2", "", "A klub nem található");
+    title.id = "club-title";
+    const heading = createElement("div", "section-heading");
+    heading.append(title);
+    shell.append(
+      heading,
+      createElement("p", "club-detail-text", "Lehet, hogy hibás a link, vagy a klub már nem szerepel a katalógusban."),
+    );
+    clubPage.replaceChildren(shell);
+    return;
+  }
+
+  const fullAddress = `${club.zipCode} ${club.city}, ${club.address}`;
+  clubMap.dataset.address = fullAddress;
+
+  const mainColumn = createElement("div", "club-detail-column");
+  mainColumn.append(
+    createDetailCard("Bemutatkozás", createElement("p", "club-detail-text", club.description)),
+    createDetailCard("Árak", createPrices(club.price)),
+  );
+
+  const sideColumn = createElement("div", "club-detail-column");
+  sideColumn.append(
+    createDetailCard(
+      "Elérhetőség",
+      createDetailList([
+        ["Cím", fullAddress],
+        ["E-mail", createLink(`mailto:${club.email}`, club.email)],
+        ["Telefon", createLink(`tel:${club.phone.replace(/[^\d+]/g, "")}`, club.phone)],
+        ["Weboldal", createWebsiteLink(club.websiteURL)],
+      ]),
+    ),
+    createDetailCard("Térkép", clubMap),
+  );
+
+  const layout = createElement("div", "club-detail-layout");
+  layout.append(mainColumn, sideColumn);
+
+  shell.append(createClubHeader(club), layout);
+  clubPage.replaceChildren(shell);
+};
+
 // "#osszes-klub" -> all clubs, "#osszes-klub/2" -> preselect main category 2 (Mozgás).
 const parseAllClubsRoute = () => {
   const [base, id] = window.location.hash.split("/");
@@ -419,27 +611,59 @@ const parseAllClubsRoute = () => {
   return { parentId: category && category.parentId === null ? category.id : null };
 };
 
+// "#klub/5-1" -> "5-1". Everything under #klub is the club page (unknown ids show "not found").
+const parseClubRoute = () => {
+  const [base, id = ""] = window.location.hash.split("/");
+  return base === CLUB_HASH ? id : null;
+};
+
+let currentView = null;
+
 const syncRoute = () => {
-  const route = parseAllClubsRoute();
-  const showAllClubs = route !== null;
+  const clubId = parseClubRoute();
+  const allClubsRoute = parseAllClubsRoute();
+  const view = clubId !== null ? "club" : allClubsRoute !== null ? "all-clubs" : "landing";
+  const previousView = currentView;
+  currentView = view;
 
-  if (showAllClubs) {
-    allClubsFilter.parentId = route.parentId;
-    allClubsFilter.categoryId = null;
-    if (allClubsRendered) {
-      updateAllClubsView();
-    } else {
-      renderAllClubsPage();
+  // Back from a club page to the list it was opened from: leave the list as it was.
+  const isReturningToList =
+    view === "all-clubs" &&
+    previousView === "club" &&
+    allClubsRendered &&
+    window.location.hash === clubListReturn.hash;
+
+  if (view === "club") {
+    if (previousView === "all-clubs") {
+      clubListReturn.scrollY = window.scrollY;
     }
+    const club = clubById.get(clubId);
+    renderClubPage(club);
+    document.title = `${club ? club.name : "A klub nem található"} – ${DEFAULT_TITLE}`;
+  } else if (view === "all-clubs") {
+    clubListReturn.hash = window.location.hash;
+    if (!isReturningToList) {
+      allClubsFilter.parentId = allClubsRoute.parentId;
+      allClubsFilter.categoryId = null;
+      if (allClubsRendered) {
+        updateAllClubsView();
+      } else {
+        renderAllClubsPage();
+      }
+    }
+    document.title = `Összes klub – ${DEFAULT_TITLE}`;
+  } else {
+    document.title = DEFAULT_TITLE;
   }
-  allClubsPage.hidden = !showAllClubs;
-  landingSections.forEach((section) => {
-    section.hidden = showAllClubs;
-  });
-  document.title = showAllClubs ? `Összes klub – ${DEFAULT_TITLE}` : DEFAULT_TITLE;
 
-  if (showAllClubs) {
-    window.scrollTo(0, 0);
+  clubPage.hidden = view !== "club";
+  allClubsPage.hidden = view !== "all-clubs";
+  landingSections.forEach((section) => {
+    section.hidden = view !== "landing";
+  });
+
+  if (view !== "landing") {
+    window.scrollTo(0, isReturningToList ? clubListReturn.scrollY : 0);
   } else if (window.location.hash) {
     // The target was hidden when the browser tried to jump to it, so scroll manually.
     document.querySelector(window.location.hash)?.scrollIntoView();
