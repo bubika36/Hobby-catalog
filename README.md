@@ -11,6 +11,6 @@ szűrők készítése, ami megkönnyíti a keresést
 
 chat funkció a felhasználók számára (az adott hobbikhoz tartozó külön chat, a hasonló érdekeltségű emberek számára)
 
-Janicska Balázs: Backend, adatbázis
+Janicska Balázs: Backend, frontend, adatbázis
 
-Szűcs Alex: Frontend, adatbázis
+Szűcs Alex: Frontend, backend, adatbázis
