@@ -105,11 +105,29 @@ img {
   background: rgba(255, 255, 255, 0.16);
 }
 
+/* The logo and the title are one link to the homepage */
 .page-title-wrap {
   display: flex;
   align-items: center;
   gap: 18px;
   flex: 0 0 auto;
+  border-radius: 20px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.page-title-wrap .brand-mark {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.page-title-wrap:hover .brand-mark {
+  border-color: rgba(255, 255, 255, 0.45);
+  background-color: rgba(255, 255, 255, 0.16);
+}
+
+.page-title-wrap:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.85);
+  outline-offset: 6px;
 }
 
 .title-mark {
@@ -923,9 +941,22 @@ h1 {
 }
 
 .club-placeholder-image {
+  position: relative;
   height: 110px;
+  overflow: hidden;
   background: linear-gradient(135deg, rgba(17, 64, 58, 0.15), rgba(17, 64, 58, 0.02)),
     linear-gradient(140deg, #dfe9e4 0%, #b8cfc8 28%, #92a9a2 100%);
+}
+
+/* Most images are logos, so the whole image is shown on white instead of being cropped */
+.club-placeholder-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  background: #fff;
+  object-fit: contain;
 }
 
 .club-placeholder-body {
@@ -1135,10 +1166,15 @@ h1 {
 }
 
 .club-map:empty::before {
-  content: "Térkép hamarosan";
+  content: "Térkép betöltése…";
   color: var(--green-900);
   font-size: 0.85rem;
   font-weight: 700;
+}
+
+/* club.js sets this when the address could not be found on the map */
+.club-map[data-state="unavailable"]:empty::before {
+  content: "A cím nem található a térképen";
 }
 
 @media (max-width: 900px) {

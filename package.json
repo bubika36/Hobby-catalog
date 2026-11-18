@@ -8,6 +8,9 @@
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
+  "nodemonConfig": {
+    "ignore": ["geocode-cache.json"]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bubika36/Hobby-catalog.git"

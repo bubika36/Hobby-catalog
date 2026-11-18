@@ -10,11 +10,12 @@ const filterSummary = document.querySelector(".filter-summary");
 const clubResults = document.querySelector(".club-results");
 
 // "all-clubs.html" -> all clubs, "all-clubs.html?category=2" -> preselect main category 2 (Mozgás).
-const preselectedCategory = categoryById.get(Number(new URLSearchParams(window.location.search).get("category")));
+const preselectedCategoryId = Number(new URLSearchParams(window.location.search).get("category"));
 
 // Selected filters: parentId = upper row (main category), categoryId = lower row (subcategory).
+// parentId is set from the URL once the categories have loaded (see showAllClubs).
 const allClubsFilter = {
-  parentId: preselectedCategory?.parentId === null ? preselectedCategory.id : null,
+  parentId: null,
   categoryId: null,
 };
 
@@ -33,19 +34,27 @@ const setPressed = (button, isActive) => {
   button.setAttribute("aria-pressed", String(isActive));
 };
 
-// Upper row: main categories, lower row: all subcategories.
-const parentButtons = [null, ...parentCategories].map((category) => createFilterButton(category, "filter-button-main"));
-const subButtons = subCategories.map((category) => createFilterButton(category, "filter-button-sub"));
-parentFilterRow.append(...parentButtons);
-subFilterRow.append(...subButtons);
+// Upper row: main categories, lower row: all subcategories. Created by showAllClubs().
+let parentButtons = [];
+let subButtons = [];
 
 // The whole card is a link to the club's subpage.
 const createClubPlaceholder = (club, category) => {
   const card = createElement("a", "club-placeholder");
   card.href = `${CLUB_PAGE}?id=${encodeURIComponent(club.id)}`;
 
+  // The club's logo over the grey box, which shows when there is no logo or it fails to load.
   const image = createElement("div", "club-placeholder-image");
   image.setAttribute("aria-hidden", "true");
+  if (club.logoURL) {
+    const logo = createElement("img");
+    logo.alt = "";
+    logo.loading = "lazy"; // 100+ cards, so only load the ones scrolled into view
+    logo.referrerPolicy = "no-referrer"; // some club sites block images linked from other sites
+    logo.src = club.logoURL;
+    logo.addEventListener("error", () => logo.remove());
+    image.append(logo);
+  }
 
   const line = createElement("span", "skeleton-line");
   line.setAttribute("aria-hidden", "true");
@@ -95,13 +104,19 @@ const updateAllClubsView = () => {
 
   const activeId = categoryId ?? parentId;
   const matchingIds = new Set(getSubtreeIds(activeId));
-  const groups = subCategories
-    .filter((category) => matchingIds.has(category.id))
-    .map((category) => ({
-      category,
-      clubs: placeholderClubs.filter((club) => club.categoryId === category.id),
-    }))
-    .filter((group) => group.clubs.length);
+
+  // Every matching club appears once, under its most specific category within the filter.
+  const clubsByCategoryId = new Map();
+  allClubs.forEach((club) => {
+    const category = getMostSpecificCategory(club.categoryIds.filter((id) => matchingIds.has(id)));
+    if (!category) return;
+    if (!clubsByCategoryId.has(category.id)) clubsByCategoryId.set(category.id, []);
+    clubsByCategoryId.get(category.id).push(club);
+  });
+
+  const groups = categories
+    .filter((category) => clubsByCategoryId.has(category.id))
+    .map((category) => ({ category, clubs: clubsByCategoryId.get(category.id) }));
 
   const clubCount = groups.reduce((sum, group) => sum + group.clubs.length, 0);
   const label = categoryById.get(activeId)?.name ?? "Minden kategória";
@@ -132,4 +147,23 @@ subFilterRow.addEventListener("click", (event) => {
   updateAllClubsView();
 });
 
-updateAllClubsView();
+// Runs once the categories and clubs have arrived from the API.
+const showAllClubs = () => {
+  const preselectedCategory = categoryById.get(preselectedCategoryId);
+  allClubsFilter.parentId = preselectedCategory?.parentId === null ? preselectedCategory.id : null;
+
+  parentButtons = [null, ...parentCategories].map((category) => createFilterButton(category, "filter-button-main"));
+  subButtons = subCategories.map((category) => createFilterButton(category, "filter-button-sub"));
+  parentFilterRow.append(...parentButtons);
+  subFilterRow.append(...subButtons);
+
+  updateAllClubsView();
+};
+
+filterSummary.textContent = "Klubok betöltése…";
+loadCatalog()
+  .then(showAllClubs)
+  .catch((error) => {
+    console.error(error);
+    filterSummary.textContent = "Nem sikerült betölteni a klubokat. Próbáld újra később.";
+  });

@@ -1,3 +1,11 @@
+// Local settings from .env (see .env.example), loaded before the modules that read them.
+// .env is in .gitignore, so everyone keeps their own; without it the defaults in the code are used.
+try {
+    process.loadEnvFile(__dirname + "/.env")
+} catch (error) {
+    if (error.code !== "ENOENT") throw error
+}
+
 const express = require("express")
 const app = express()
 const route = require("./route/route")

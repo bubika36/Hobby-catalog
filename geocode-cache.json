@@ -1,0 +1,557 @@
+{
+  "Budai út 154.|8000|Székesfehérvár": {
+    "lat": 47.1950469,
+    "lng": 18.435666,
+    "precision": "address"
+  },
+  "Sarló utca 4. 1/10.|8000|Székesfehérvár": {
+    "lat": 47.1929282,
+    "lng": 18.4212099,
+    "precision": "address"
+  },
+  "Farkasvermi út 2.|8000|Székesfehérvár": {
+    "lat": 47.2016895,
+    "lng": 18.3696103,
+    "precision": "address"
+  },
+  "Kiskút útja 3.|8000|Székesfehérvár": {
+    "lat": 47.2097759,
+    "lng": 18.4153424,
+    "precision": "address"
+  },
+  "Bregyó köz 1.|8000|Székesfehérvár": {
+    "lat": 47.2039154,
+    "lng": 18.4002275,
+    "precision": "address"
+  },
+  "Királykút lakónegyed 20.|8000|Székesfehérvár": {
+    "lat": 47.1983538,
+    "lng": 18.4148998,
+    "precision": "address"
+  },
+  "Bártfai utca 6.|8000|Székesfehérvár": {
+    "lat": 47.199903,
+    "lng": 18.449459,
+    "precision": "address"
+  },
+  "Pákozdmajor 0203/26 hrsz.|8095|Pákozd": {
+    "lat": 47.2170707,
+    "lng": 18.5437107,
+    "precision": "city"
+  },
+  "Gáz utca 19.|8000|Székesfehérvár": {
+    "lat": 47.1913926,
+    "lng": 18.4193727,
+    "precision": "address"
+  },
+  "Csíkvári út 10.|8000|Székesfehérvár": {
+    "lat": 47.1736509,
+    "lng": 18.414311,
+    "precision": "address"
+  },
+  "Eszperantó út 2-4.|2400|Dunaújváros": {
+    "lat": 46.957864,
+    "lng": 18.9460305,
+    "precision": "address"
+  },
+  "Mészöly Géza utca|8000|Székesfehérvár": {
+    "lat": 47.1972028,
+    "lng": 18.4057147,
+    "precision": "street"
+  },
+  "Csaba utca 56.|2030|Érd": {
+    "lat": 47.3960496,
+    "lng": 18.9216353,
+    "precision": "address"
+  },
+  "Gesztenye utca 11.|2040|Budaörs": {
+    "lat": 47.4662691,
+    "lng": 18.9649065,
+    "precision": "address"
+  },
+  "Bajcsy-Zsilinszky u. 46. I/3.|2890|Tata": {
+    "lat": 47.6554009,
+    "lng": 18.3217185,
+    "precision": "address"
+  },
+  "Berényi út 31.|8000|Székesfehérvár": {
+    "lat": 47.2010848,
+    "lng": 18.424455,
+    "precision": "address"
+  },
+  "Újmandulás utca 4.|8105|Pétfürdő": {
+    "lat": 47.1599702,
+    "lng": 18.1209474,
+    "precision": "city"
+  },
+  "Deák Ferenc u. 46.|2091|Etyek": {
+    "lat": 47.4453471,
+    "lng": 18.7551813,
+    "precision": "address"
+  },
+  "Lövőház u.17.|8200|Veszprém": {
+    "lat": 47.0816096,
+    "lng": 17.9158982,
+    "precision": "address"
+  },
+  "Tópart u.17.|2484|Gárdony": {
+    "lat": 47.1953972,
+    "lng": 18.5969264,
+    "precision": "address"
+  },
+  "Aradi Vértanúk u. 65.|8600|Siófok": {
+    "lat": 46.9103818,
+    "lng": 18.0654633,
+    "precision": "address"
+  },
+  "Kele utca hrsz 5867/5.|8600|Siófok": {
+    "lat": 46.9010854,
+    "lng": 18.0586202,
+    "precision": "street"
+  },
+  "Középső-Dunapart 1.|2344|Dömsöd": {
+    "lat": 47.0935565,
+    "lng": 18.9966448,
+    "precision": "address"
+  },
+  "Kossuth Lajos u. 10.|2315|Szigethalom": {
+    "lat": 47.3269272,
+    "lng": 19.0029938,
+    "precision": "address"
+  },
+  "Kenderföld u. 19.|8237|Tihany": {
+    "lat": 46.8990058,
+    "lng": 17.896222,
+    "precision": "address"
+  },
+  "Bánhidai ltp. 108.|2800|Tatabánya": {
+    "lat": 47.5778815,
+    "lng": 18.3917145,
+    "precision": "address"
+  },
+  "Kiskút útja 1.|8000|Székesfehérvár": {
+    "lat": 47.2090613,
+    "lng": 18.4130309,
+    "precision": "address"
+  },
+  "Kisteleki tanya|8000|Székesfehérvár": {
+    "lat": 47.1400713,
+    "lng": 18.445735,
+    "precision": "street"
+  },
+  "Pirosalma u. 12.|8142|Úrhida": {
+    "lat": 47.1213748,
+    "lng": 18.3175935,
+    "precision": "address"
+  },
+  "Fő u. 39.|8096|Sukoró": {
+    "lat": 47.2386979,
+    "lng": 18.6055815,
+    "precision": "address"
+  },
+  "Gyümölcs utca 38. földsz|8000|Székesfehérvár": {
+    "lat": 47.18597,
+    "lng": 18.42021,
+    "precision": "address"
+  },
+  "Vörösmarty tér 5.|8000|Székesfehérvár": {
+    "lat": 47.1864281,
+    "lng": 18.4131301,
+    "precision": "address"
+  },
+  "Bajcsy-Zsilinszky utca 212. 5-ös e|8600|Siófok": {
+    "lat": 46.9095586,
+    "lng": 18.0773225,
+    "precision": "address"
+  },
+  "Liszt Ferenc u. 11.|8000|Székesfehérvár": {
+    "lat": 47.1900452,
+    "lng": 18.408208,
+    "precision": "address"
+  },
+  "Király sor 60.|8000|Székesfehérvár": {
+    "lat": 47.1947127,
+    "lng": 18.4310275,
+    "precision": "address"
+  },
+  "Huszár u. 3.|8000|Székesfehérvár": {
+    "lat": 47.1891188,
+    "lng": 18.4249899,
+    "precision": "address"
+  },
+  "Színház u. 2.|8000|Székesfehérvár": {
+    "lat": 47.1949726,
+    "lng": 18.4068668,
+    "precision": "address"
+  },
+  "Kaszap István u. 6.|8000|Székesfehérvár": {
+    "lat": 47.1828681,
+    "lng": 18.4205699,
+    "precision": "address"
+  },
+  "Fő u. 1.|2852|Kecskéd": {
+    "lat": 47.5206778,
+    "lng": 18.3076649,
+    "precision": "address"
+  },
+  "Duna utca 28.|2440|Százhalombatta": {
+    "lat": 47.3170425,
+    "lng": 18.9309367,
+    "precision": "address"
+  },
+  "Hoffer Ármin sétány 2.|8200|Veszprém": {
+    "lat": 47.0921933,
+    "lng": 17.9112694,
+    "precision": "address"
+  },
+  "Varga utca 4/F|8200|Veszprém": {
+    "lat": 47.0803027,
+    "lng": 17.9203724,
+    "precision": "address"
+  },
+  "Wartha Vince u. 3.|8200|Veszprém": {
+    "lat": 47.0847228,
+    "lng": 17.9043195,
+    "precision": "address"
+  },
+  "Gál István ltp. 511.|2800|Tatabánya": {
+    "lat": 47.5621614,
+    "lng": 18.4189652,
+    "precision": "address"
+  },
+  "Május 1 út 53/B|2890|Tata": {
+    "lat": 47.6434955,
+    "lng": 18.3093023,
+    "precision": "address"
+  },
+  "Kelemen Béla út 18.|8000|Székesfehérvár": {
+    "lat": 47.1916467,
+    "lng": 18.3971108,
+    "precision": "address"
+  },
+  "Bánki Donát u. 8. 2/3.|2840|Oroszlány": {
+    "lat": 47.4857748,
+    "lng": 18.3106507,
+    "precision": "address"
+  },
+  "Kölcsey Ferenc utca 23.|2060|Bicske": {
+    "lat": 47.4907066,
+    "lng": 18.6358046,
+    "precision": "city"
+  },
+  "Wesselényi M. u. 100.|8600|Siófok": {
+    "lat": 46.9220136,
+    "lng": 18.0943168,
+    "precision": "address"
+  },
+  "Május 1 út 38.|2060|Bicske": {
+    "lat": 47.4917076,
+    "lng": 18.6188359,
+    "precision": "address"
+  },
+  "Wartha Vince utca 3.|8200|Veszprém": {
+    "lat": 47.0847228,
+    "lng": 17.9043195,
+    "precision": "address"
+  },
+  "Fácán köz 1.|2030|Érd": {
+    "lat": 47.3667031,
+    "lng": 18.8902379,
+    "precision": "address"
+  },
+  "Püspökkertváros 13.|8000|Székesfehérvár": {
+    "lat": 47.2014027,
+    "lng": 18.4597636,
+    "precision": "address"
+  },
+  "Meggyfasor 1.|2481|Velence": {
+    "lat": 47.2353177,
+    "lng": 18.6605263,
+    "precision": "city"
+  },
+  "Rákóczi u. 16.|8220|Balatonalmádi": {
+    "lat": 47.0377949,
+    "lng": 18.0242092,
+    "precision": "address"
+  },
+  "Déli út 2.|8600|Siófok": {
+    "lat": 46.8947168,
+    "lng": 18.0390115,
+    "precision": "address"
+  },
+  "Újpiac tér 6.|8600|Siófok": {
+    "lat": 46.906844,
+    "lng": 18.0566324,
+    "precision": "address"
+  },
+  "Táncsics M. u. 1/a|2400|Dunaújváros": {
+    "lat": 46.9595763,
+    "lng": 18.9340059,
+    "precision": "address"
+  },
+  "Vasmű út 29. I. 1.|2400|Dunaújváros": {
+    "lat": 46.9620533,
+    "lng": 18.9419036,
+    "precision": "address"
+  },
+  "Hársfa u. 6.|2040|Budaörs": {
+    "lat": 47.4556994,
+    "lng": 18.969478,
+    "precision": "address"
+  },
+  "Rákóczi út 28.|2330|Dunaharaszti": {
+    "lat": 47.3542247,
+    "lng": 19.1033688,
+    "precision": "address"
+  },
+  "Raktár utca 1.|8000|Székesfehérvár": {
+    "lat": 47.186453,
+    "lng": 18.4420826,
+    "precision": "address"
+  },
+  "Váci Mihály út 4.3/4.|2400|Dunaújváros": {
+    "lat": 46.970486,
+    "lng": 18.9344935,
+    "precision": "address"
+  },
+  "Csépi út 15/a|2310|Szigetszentmiklós": {
+    "lat": 47.3355962,
+    "lng": 19.0355665,
+    "precision": "address"
+  },
+  "Egyetem utca 10.|8200|Veszprém": {
+    "lat": 47.0883929,
+    "lng": 17.9084885,
+    "precision": "address"
+  },
+  "Óvoda utca 6.|2045|Törökbálint": {
+    "lat": 47.4411144,
+    "lng": 18.8973744,
+    "precision": "address"
+  },
+  "Ifjúság útja 7.|2440|Százhalombatta": {
+    "lat": 47.3195539,
+    "lng": 18.9104778,
+    "precision": "address"
+  },
+  "Malomkő utca 5.|8200|Veszprém": {
+    "lat": 47.089691,
+    "lng": 17.9012615,
+    "precision": "street"
+  },
+  "Titkár u. 14.|2030|Érd": {
+    "lat": 47.3703402,
+    "lng": 18.906325,
+    "precision": "address"
+  },
+  "Kossuth u 3.|8230|Balatonfüred": {
+    "lat": 46.961587,
+    "lng": 17.8738109,
+    "precision": "address"
+  },
+  "Deák F. u. 37. 9/1.|8000|Székesfehérvár": {
+    "lat": 47.1859725,
+    "lng": 18.4222219,
+    "precision": "address"
+  },
+  "Rónai György utca 112.|2330|Dunaharaszti": {
+    "lat": 47.3536076,
+    "lng": 19.1103541,
+    "precision": "address"
+  },
+  "Arany János u. 38.|2330|Dunaharaszti": {
+    "lat": 47.3609121,
+    "lng": 19.0969946,
+    "precision": "address"
+  },
+  "Aradi u. 56.|2316|Tököl": {
+    "lat": 47.3152842,
+    "lng": 18.9720681,
+    "precision": "address"
+  },
+  "Károly király u. 145.|2040|Budaörs": {
+    "lat": 47.4499809,
+    "lng": 18.9607007,
+    "precision": "address"
+  },
+  "Fő út 152.|2330|Dunaharaszti": {
+    "lat": 47.353728,
+    "lng": 19.0837004,
+    "precision": "address"
+  },
+  "Bécsi út 34.|2510|Dorog": {
+    "lat": 47.7164928,
+    "lng": 18.7338629,
+    "precision": "address"
+  },
+  "Építők útja 2-4.C ép|2040|Budaörs": {
+    "lat": 47.4540647,
+    "lng": 18.9515217,
+    "precision": "address"
+  },
+  "Lévai u. 33.|2040|Budaörs": {
+    "lat": 47.4602944,
+    "lng": 18.9435967,
+    "precision": "address"
+  },
+  "Nyerges utca Fsz. 4.|8200|Veszprém": {
+    "lat": 47.0831414,
+    "lng": 17.9197077,
+    "precision": "street"
+  },
+  "Szarkaláb u. 18.|2030|Érd": {
+    "lat": 47.3876762,
+    "lng": 18.9321691,
+    "precision": "address"
+  },
+  "Vagány u. 16.|2310|Szigetszentmiklós": {
+    "lat": 47.3348547,
+    "lng": 19.0314772,
+    "precision": "address"
+  },
+  "Csíkvári u. 10.|8000|Székesfehérvár": {
+    "lat": 47.1736509,
+    "lng": 18.414311,
+    "precision": "address"
+  },
+  "Gombócleső u|8000|Székesfehérvár": {
+    "lat": 47.2078751,
+    "lng": 18.4062977,
+    "precision": "street"
+  },
+  "Dózsa György utca 35.|8052|Fehérvárcsurgó": {
+    "lat": 47.290921,
+    "lng": 18.268177,
+    "precision": "address"
+  },
+  "Fehérvári út 9.|8100|Várpalota": {
+    "lat": 47.1997807,
+    "lng": 18.1474649,
+    "precision": "address"
+  },
+  "Gáz u. 19.|8000|Székesfehérvár": {
+    "lat": 47.1913926,
+    "lng": 18.4193727,
+    "precision": "address"
+  },
+  "Fő tér 2.|2840|Oroszlány": {
+    "lat": 47.486359,
+    "lng": 18.3166655,
+    "precision": "address"
+  },
+  "Hága László u. 7.|2440|Százhalombatta": {
+    "lat": 47.319771,
+    "lng": 18.9125548,
+    "precision": "address"
+  },
+  "Füredi u. 12.|8200|Veszprém": {
+    "lat": 47.0852613,
+    "lng": 17.9118174,
+    "precision": "address"
+  },
+  "Verseci u. 1-15.|8000|Székesfehérvár": {
+    "lat": 47.191016,
+    "lng": 18.4641265,
+    "precision": "address"
+  },
+  "Vadász utca 14.|2476|Pázmánd": {
+    "lat": 47.2931136,
+    "lng": 18.6535988,
+    "precision": "address"
+  },
+  "Kisberényi út 63.|8220|Balatonalmádi": {
+    "lat": 47.0404986,
+    "lng": 18.0001613,
+    "precision": "address"
+  },
+  "Külső-Kádártai út 5.|8200|Veszprém": {
+    "lat": 47.1095958,
+    "lng": 17.9361331,
+    "precision": "address"
+  },
+  "Canko utca 27.|2030|Érd": {
+    "lat": 47.3800323,
+    "lng": 18.8960093,
+    "precision": "address"
+  },
+  "Szent István tér 1.|8230|Balatonfüred": {
+    "lat": 46.9613217,
+    "lng": 17.8763161,
+    "precision": "address"
+  },
+  "Köztársaság u|2800|Tatabánya": {
+    "lat": 47.5770803,
+    "lng": 18.4021443,
+    "precision": "street"
+  },
+  "Temető utca 30.|2400|Dunaújváros": {
+    "lat": 46.9823558,
+    "lng": 18.9309047,
+    "precision": "address"
+  },
+  "Fő utca 61/b|2454|Iváncsa": {
+    "lat": 47.150361,
+    "lng": 18.8266294,
+    "precision": "address"
+  },
+  "Budai út 7/A II. emelet 15.|2030|Érd": {
+    "lat": 47.3778226,
+    "lng": 18.9198053,
+    "precision": "address"
+  },
+  "Kisfaludy utca 12.|2316|Tököl": {
+    "lat": 47.3402904,
+    "lng": 18.9670181,
+    "precision": "address"
+  },
+  "Sorház u. 1/4.|8184|Balatonfűzfő": {
+    "lat": 47.0777181,
+    "lng": 18.0282956,
+    "precision": "address"
+  },
+  "Cseri utca 30.|2800|Tatabánya": {
+    "lat": 47.5533,
+    "lng": 18.4219214,
+    "precision": "address"
+  },
+  "Táncsics Mihály út 1/A|2400|Dunaújváros": {
+    "lat": 46.9592158,
+    "lng": 18.9345228,
+    "precision": "address"
+  },
+  "Iskola utca 19.|2085|Pilisvörösvár": {
+    "lat": 47.618373,
+    "lng": 18.9075001,
+    "precision": "address"
+  },
+  "Brusznyai Árpád u. 18-20.|8200|Veszprém": {
+    "lat": 47.092402,
+    "lng": 17.9091013,
+    "precision": "address"
+  },
+  "Zsolt u. 30.|8000|Székesfehérvár": {
+    "lat": 47.1967273,
+    "lng": 18.4350337,
+    "precision": "address"
+  },
+  "Széchenyi u. 122.|8000|Székesfehérvár": {
+    "lat": 47.1762605,
+    "lng": 18.4190061,
+    "precision": "address"
+  },
+  "Ercsi út 34.|2030|Érd": {
+    "lat": 47.366513,
+    "lng": 18.9129733,
+    "precision": "address"
+  },
+  "Szigetfő u. 11-13.|2459|Rácalmás": {
+    "lat": 47.020358,
+    "lng": 18.9446878,
+    "precision": "address"
+  },
+  "Palotai út 133.|8000|Székesfehérvár": {
+    "lat": 47.20029,
+    "lng": 18.3938969,
+    "precision": "address"
+  }
+}

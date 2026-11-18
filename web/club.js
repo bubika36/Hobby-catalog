@@ -87,7 +87,8 @@ const createClubLogo = (club) => {
 };
 
 const createClubHeader = (club) => {
-  const category = categoryById.get(club.categoryId);
+  const category = getMostSpecificCategory(club.categoryIds);
+  const path = category ? [...getAncestors(category), category].map((item) => item.name).join(" › ") : "";
 
   const title = createElement("h2", "", club.name);
   title.id = "club-title";
@@ -103,7 +104,7 @@ const createClubHeader = (club) => {
 
   const copy = createElement("div");
   copy.append(
-    createElement("p", "club-detail-path", [...getAncestors(category), category].map((item) => item.name).join(" › ")),
+    createElement("p", "club-detail-path", path),
     title,
     rating,
   );
@@ -113,19 +114,36 @@ const createClubHeader = (club) => {
   return header;
 };
 
-// Leaflet map with OpenStreetMap tiles and a marker on the club. Only the placeholder
-// clubs have coordinates for now; real clubs' addresses will need geocoding first.
-// Without coordinates (or if Leaflet fails to load) #map stays empty and shows the CSS placeholder.
-const showClubOnMap = (club) => {
-  if (!club.coordinates || typeof L === "undefined") return;
+// How precisely the backend found the address -> how close the map zooms in.
+// Every step down shows twice as wide an area: 15 is about 1 km across, so the pin's neighbourhood is visible.
+const MAP_ZOOM = { address: 15, street: 14, city: 12 };
+
+// Leaflet map with OpenStreetMap tiles. The backend turns the club's address into
+// coordinates (GET /api/clubs/:id/location -> { lat, lng, precision }).
+// Until then, or if that fails, #map stays empty and shows the CSS placeholder.
+const showClubOnMap = async (club) => {
+  if (typeof L === "undefined") return;
+
+  const response = await fetch(`/api/clubs/${club.id}/location`);
+  if (!response.ok) {
+    clubMap.dataset.state = "unavailable"; // changes the placeholder's text
+    return;
+  }
+  const { lat, lng, precision } = await response.json();
 
   // No scroll-wheel zoom, so scrolling the page over the map still scrolls the page.
-  const map = L.map(clubMap, { scrollWheelZoom: false }).setView(club.coordinates, 16);
+  const map = L.map(clubMap, { scrollWheelZoom: false }).setView([lat, lng], MAP_ZOOM[precision] ?? 16);
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
-  L.marker(club.coordinates, { alt: club.name }).addTo(map);
+
+  // Only the town was found: an area instead of a pin, so it does not look like an exact address.
+  if (precision === "city") {
+    L.circle([lat, lng], { radius: 1500 }).addTo(map);
+  } else {
+    L.marker([lat, lng], { alt: club.name }).addTo(map);
+  }
 };
 
 // club.html holds the back link and the layout with the map card;
@@ -166,7 +184,10 @@ const renderClubPage = (club) => {
   );
 
   layout.before(createClubHeader(club));
-  showClubOnMap(club);
+  showClubOnMap(club).catch((error) => {
+    console.error(error);
+    clubMap.dataset.state = "unavailable";
+  });
 };
 
 // The back link returns to the list the club was opened from; going back in the
@@ -188,10 +209,17 @@ const setUpBackLink = () => {
   });
 };
 
-// "club.html?id=5-1" -> "5-1". Unknown or missing ids show "not found".
-const clubId = new URLSearchParams(window.location.search).get("id") ?? "";
-const club = clubById.get(clubId);
+// "club.html?id=5" -> 5. Unknown or missing ids show "not found".
+const clubId = Number(new URLSearchParams(window.location.search).get("id"));
 
 setUpBackLink();
-renderClubPage(club);
-document.title = `${club ? club.name : "A klub nem található"} – ${SITE_TITLE}`;
+
+// The page renders once the clubs and categories (for the header's path) have loaded.
+// If loading fails, the page shows "not found".
+loadCatalog()
+  .catch((error) => console.error(error))
+  .finally(() => {
+    const club = clubById.get(clubId);
+    renderClubPage(club);
+    document.title = `${club ? club.name : "A klub nem található"} – ${SITE_TITLE}`;
+  });

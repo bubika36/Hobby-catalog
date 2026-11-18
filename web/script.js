@@ -128,88 +128,23 @@ if (hero) {
 const ALL_CLUBS_PAGE = "all-clubs.html";
 const CLUB_PAGE = "club.html";
 
-// Hardcoded copy of the `categories` table in hobby_catalog_data.sql (categoryId, name, parentId).
-// TODO: replace with an API call once the backend exists.
-const categories = [
-  // Fő kategóriák
-  { id: 1, name: "Szabadtér", parentId: null },
-  { id: 2, name: "Mozgás", parentId: null },
-  { id: 3, name: "Kreativitás", parentId: null },
-  { id: 4, name: "Közösség", parentId: null },
+// Categories come from the backend (GET /api/categories -> [{ id, name, parentId }]).
+// They start empty; the subpages call loadCategories() and render once it has finished.
+const CATEGORIES_API = "/api/categories";
 
-  // Szabadtér
-  { id: 5, name: "Túrázás", parentId: 1 },
-  { id: 6, name: "Futás", parentId: 1 },
-  { id: 7, name: "Kerékpározás", parentId: 1 },
-  { id: 8, name: "Mászás", parentId: 1 },
-  { id: 9, name: "Kajak-kenu", parentId: 1 },
-  { id: 10, name: "Evezés", parentId: 1 },
-  { id: 11, name: "Vitorlázás", parentId: 1 },
-  { id: 12, name: "SUP", parentId: 1 },
-  { id: 13, name: "Horgászat", parentId: 1 },
-  { id: 14, name: "Lovaglás", parentId: 1 },
+let categories = [];
+let categoryById = new Map();
+let parentCategories = [];
+let subCategories = [];
 
-  // Mozgás
-  { id: 15, name: "Fitness", parentId: 2 },
-  { id: 16, name: "Jóga", parentId: 2 },
-  { id: 17, name: "Pilates", parentId: 2 },
-  { id: 18, name: "Tánc", parentId: 2 },
-  { id: 19, name: "Atlétika", parentId: 2 },
-  { id: 20, name: "Harcművészet", parentId: 2 },
-  { id: 21, name: "Labdajátékok", parentId: 2 },
-  { id: 22, name: "Vízisport", parentId: 2 },
-  { id: 23, name: "Tenisz", parentId: 2 },
-  { id: 24, name: "Asztalitenisz", parentId: 2 },
-  { id: 25, name: "Jégkorong", parentId: 2 },
-  { id: 26, name: "Korcsolyázás", parentId: 2 },
-  { id: 27, name: "Vívás", parentId: 2 },
-
-  // Mozgás > Harcművészet
-  { id: 28, name: "Judo", parentId: 20 },
-  { id: 29, name: "Karate", parentId: 20 },
-  { id: 30, name: "Küzdősport", parentId: 20 },
-
-  // Mozgás > Harcművészet > Küzdősport
-  { id: 31, name: "Box", parentId: 30 },
-  { id: 32, name: "Kick-box", parentId: 30 },
-
-  // Mozgás > Labdajátékok
-  { id: 33, name: "Csapatsport", parentId: 21 },
-  { id: 34, name: "Labdarúgás", parentId: 21 },
-  { id: 35, name: "Kosárlabda", parentId: 21 },
-  { id: 36, name: "Kézilabda", parentId: 21 },
-  { id: 37, name: "Röplabda", parentId: 21 },
-  { id: 38, name: "Amerikai futball", parentId: 21 },
-
-  // Mozgás > Vízisport
-  { id: 39, name: "Úszás", parentId: 22 },
-  { id: 40, name: "Vízilabda", parentId: 22 },
-
-  // Kreativitás
-  { id: 41, name: "Festés és rajzolás", parentId: 3 },
-  { id: 42, name: "Kerámia", parentId: 3 },
-  { id: 43, name: "Fotózás", parentId: 3 },
-  { id: 44, name: "Kézművesség", parentId: 3 },
-  { id: 45, name: "Zene", parentId: 3 },
-  { id: 46, name: "Ének és kórus", parentId: 3 },
-  { id: 47, name: "Színjátszás", parentId: 3 },
-  { id: 48, name: "Főzés", parentId: 3 },
-
-  // Közösség
-  { id: 49, name: "Sakk", parentId: 4 },
-  { id: 50, name: "Társasjáték", parentId: 4 },
-  { id: 51, name: "Könyvklub", parentId: 4 },
-  { id: 52, name: "Nyelvi klub", parentId: 4 },
-  { id: 53, name: "Kvízest", parentId: 4 },
-  { id: 54, name: "Filmklub", parentId: 4 },
-  { id: 55, name: "Önkéntesség", parentId: 4 },
-  { id: 56, name: "Kertészkedés", parentId: 4 },
-  { id: 57, name: "E-sport", parentId: 4 },
-];
-
-const categoryById = new Map(categories.map((category) => [category.id, category]));
-const parentCategories = categories.filter((category) => category.parentId === null);
-const subCategories = categories.filter((category) => category.parentId !== null);
+const loadCategories = async () => {
+  const response = await fetch(CATEGORIES_API);
+  if (!response.ok) throw new Error(`Failed to load categories (HTTP ${response.status})`);
+  categories = await response.json();
+  categoryById = new Map(categories.map((category) => [category.id, category]));
+  parentCategories = categories.filter((category) => category.parentId === null);
+  subCategories = categories.filter((category) => category.parentId !== null);
+};
 
 const getChildren = (parentId) => categories.filter((category) => category.parentId === parentId);
 
@@ -228,54 +163,32 @@ const getAncestors = (category) => {
 
 const getRootId = (category) => (getAncestors(category)[0] ?? category).id;
 
-// Placeholder clubs: 5 or 6 for every subcategory, with the same fields as the
-// `clubs` and `price` tables so the club page can show every detail.
-// TODO: replace with clubs from the API.
+// Clubs come from the backend too (GET /api/clubs -> [{ id, name, ..., categoryIds, price }]).
+const CLUBS_API = "/api/clubs";
 
-// Real Székesfehérvár addresses with their coordinates (looked up on OpenStreetMap),
-// so the club page's map can show where a placeholder club is. Placeholder only:
-// the `clubs` table stores no coordinates, real clubs' addresses will be geocoded.
-const placeholderLocations = [
-  { address: "Budai út 12.", coordinates: { lat: 47.189145, lng: 18.415003 } },
-  { address: "Palotai út 1.", coordinates: { lat: 47.19063, lng: 18.406494 } },
-  { address: "Berényi út 15.", coordinates: { lat: 47.200313, lng: 18.422545 } },
-  { address: "Prohászka Ottokár út 30/A.", coordinates: { lat: 47.186, lng: 18.417002 } },
-  { address: "Fő utca 8.", coordinates: { lat: 47.194754, lng: 18.408674 } },
-  { address: "Rákóczi utca 25.", coordinates: { lat: 47.194349, lng: 18.415774 } },
-  { address: "Móri út 16.", coordinates: { lat: 47.200043, lng: 18.408775 } },
-  { address: "Csikvári út 10.", coordinates: { lat: 47.173651, lng: 18.414311 } },
-  { address: "Seregélyesi út 96.", coordinates: { lat: 47.185046, lng: 18.461154 } },
-  { address: "Pozsonyi út 47.", coordinates: { lat: 47.204835, lng: 18.448868 } },
-];
+let allClubs = [];
+let clubById = new Map();
 
-const placeholderClubs = subCategories.flatMap((category) =>
-  Array.from({ length: 5 + (category.id % 2) }, (_, index) => {
-    const id = `${category.id}-${index + 1}`;
-    const seed = category.id * 7 + index * 3;
-    const adultPrice = 3000 + (seed % 9) * 1000;
-    const place = placeholderLocations[seed % placeholderLocations.length];
-    return {
-      id,
-      name: `${category.name} klub ${String(index + 1).padStart(2, "0")}`,
-      categoryId: category.id,
-      description:
-        "Barátságos közösség kezdőknek és haladóknak egyaránt. Rendszeres foglalkozások, tapasztalt vezetők és jó hangulat várnak – gyere el egy próbaalkalomra!",
-      email: `klub-${id}@example.com`,
-      phone: `+36-30-000-${String(seed).padStart(4, "0")}`,
-      websiteURL: `https://example.com/klub-${id}`,
-      logoURL: "",
-      rating: 4 + (seed % 11) / 10,
-      reviewCount: seed % 25,
-      address: place.address,
-      zipCode: 8000,
-      city: "Székesfehérvár",
-      coordinates: place.coordinates, // placeholder only, see placeholderLocations
-      price: { adult: adultPrice, student: index % 3 === 2 ? null : adultPrice - 1000 },
-    };
-  }),
-);
+const loadClubs = async () => {
+  const response = await fetch(CLUBS_API);
+  if (!response.ok) throw new Error(`Failed to load clubs (HTTP ${response.status})`);
+  allClubs = await response.json();
+  clubById = new Map(allClubs.map((club) => [club.id, club]));
+};
 
-const clubById = new Map(placeholderClubs.map((club) => [club.id, club]));
+// The subpages need both, so they load them together.
+const loadCatalog = () => Promise.all([loadCategories(), loadClubs()]);
+
+// A club can have several categories (e.g. Labdajátékok, Csapatsport and Kosárlabda).
+// This picks the most specific one: the deepest, and on a tie the later one.
+const getMostSpecificCategory = (categoryIds) =>
+  categoryIds
+    .map((id) => categoryById.get(id))
+    .filter(Boolean)
+    .reduce(
+      (best, category) => (!best || getAncestors(category).length >= getAncestors(best).length ? category : best),
+      null,
+    );
 
 const createElement = (tag, className, text) => {
   const element = document.createElement(tag);
