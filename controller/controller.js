@@ -23,6 +23,8 @@ exports.allClubs = async (req, res) => {
 
 // The club's coordinates for the map: { lat, lng, precision }
 exports.clubLocation = async (req, res) => {
+    // only whole numbers: Number("abc") is NaN and Number("1e999") is Infinity, which break the SQL
+    if (!/^\d{1,9}$/.test(req.params.id)) return res.status(400).json({ error: "Invalid club id!" })
     try {
         const club = await model.clubAddress(Number(req.params.id))
         if (!club) return res.status(404).json({ error: "Club not found!" })
