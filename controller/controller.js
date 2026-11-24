@@ -7,7 +7,7 @@ exports.allCategories = async (req, res) => {
         res.json(categories)
     } catch (error) {
         console.error(error)
-        res.status(404).json({ error: "No records found!" })
+        res.status(500).json({ error: "Failed to load categories!" })
     }
 }
 
@@ -17,7 +17,7 @@ exports.allClubs = async (req, res) => {
         res.json(clubs)
     } catch (error) {
         console.error(error)
-        res.status(404).json({ error: "No records found!" })
+        res.status(500).json({ error: "Failed to load clubs!" })
     }
 }
 

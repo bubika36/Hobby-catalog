@@ -104,7 +104,7 @@ adult INT NULL,
 student INT NULL,
 clubs_clubId INT NOT NULL,
 PRIMARY KEY (priceId),
-INDEX fk_price_clubs1_idx (clubs_clubId ASC),
+UNIQUE INDEX fk_price_clubs1_idx (clubs_clubId ASC), -- one price row per club, or /api/clubs lists the club twice
 CONSTRAINT fk_price_clubs1
 FOREIGN KEY (clubs_clubId)
 REFERENCES clubs (clubId)

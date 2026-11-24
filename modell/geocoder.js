@@ -7,7 +7,8 @@ const fs = require("fs/promises")
 const path = require("path")
 
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
-const USER_AGENT = process.env.GEOCODER_USER_AGENT || "club-map-geocoder/1.0"
+// Header values must not contain "ő", "ű" etc. (fetch fails before sending), so it is ASCII only: "Szűcs" -> "Szucs".
+const USER_AGENT = (process.env.GEOCODER_USER_AGENT || "club-map-geocoder/1.0").normalize("NFD").replace(/[^\x20-\x7e]/g, "")
 if (!process.env.GEOCODER_USER_AGENT) {
     console.warn("GEOCODER_USER_AGENT is not set (see .env.example): the map's address lookups use a generic User-Agent, which Nominatim may throttle.")
 }
@@ -16,17 +17,33 @@ const MIN_DELAY_MS = 1100
 
 // ---------- cache: "address|zipCode|city" -> { lat, lng, precision }, or null if not found ----------
 
-let cachePromise = null
-const getCache = () => {
-    cachePromise ??= fs
-        .readFile(CACHE_FILE, "utf8")
-        .then((text) => new Map(Object.entries(JSON.parse(text))))
-        .catch(() => new Map())
-    return cachePromise
+// Read on every lookup (the file is small), so entries from a git pull or a pin fixed by hand
+// apply right away and are never overwritten by an older copy in memory.
+// A missing file is an empty cache. A broken one (git conflict, cut-off write) returns null:
+// it is then neither used nor overwritten, so its entries can be recovered by hand.
+const readCache = async () => {
+    try {
+        return JSON.parse((await fs.readFile(CACHE_FILE, "utf8")).replace(/^﻿/, ""))
+    } catch (error) {
+        if (error.code === "ENOENT") return {}
+        console.error(`${CACHE_FILE} cannot be read, so addresses are looked up without saving them until it is fixed:`, error.message)
+        return null
+    }
 }
 
-const saveCache = (cache) =>
-    fs.writeFile(CACHE_FILE, JSON.stringify(Object.fromEntries(cache), null, 2) + "\n")
+// Saves run one at a time, each re-reading the file, so two lookups finishing together keep both entries.
+let saving = Promise.resolve()
+const saveToCache = (key, location) => {
+    saving = saving.then(async () => {
+        const cache = await readCache()
+        if (!cache) return
+        cache[key] = location
+        // written to a temporary file first, so a crash mid-write cannot leave a cut-off cache
+        await fs.writeFile(`${CACHE_FILE}.tmp`, JSON.stringify(cache, null, 2) + "\n")
+        await fs.rename(`${CACHE_FILE}.tmp`, CACHE_FILE)
+    }).catch((error) => console.error("Could not save the geocode cache:", error)) // the location is still returned
+    return saving
+}
 
 // ---------- Nominatim requests, one at a time, at least MIN_DELAY_MS apart ----------
 
@@ -77,13 +94,14 @@ const parseAddress = (address) => {
     const hasParcelNumber = /hrsz/i.test(address) // "0203/26 hrsz." is a land registry number, not a house number
     const tokens = address
         .replace(/hrsz\.?/gi, " ")
-        .replace(/(^|\s)u\.\s*/g, "$1utca ")
-        .replace(/(^|\s)ltp\.\s*/g, "$1lakótelep ")
+        .replace(/(^|[\s.])u\.\s*/g, "$1 utca ") // also right after an initial: "Wesselényi M.u.100."
+        .replace(/(^|[\s.])ltp\.\s*/g, "$1 lakótelep ")
         .split(/\s+/)
         .filter(Boolean)
 
     const isStreetType = (token) => token === "u" || STREET_TYPES.has(token.replace(/[.,]+$/, "").toLowerCase())
     let end = tokens.findIndex(isStreetType) // the street name ends with its type ("Budai út")
+    while (end !== -1 && end + 1 < tokens.length && isStreetType(tokens[end + 1])) end++ // "Park utca": the last of them
     if (end === -1) end = tokens.findIndex((token) => /^\d/.test(token)) - 1 // or right before the number
     if (end < 0) return { street: tokens.join(" "), number: null }
 
@@ -93,12 +111,12 @@ const parseAddress = (address) => {
 }
 
 // The data often has the wrong street type ("Csíkvári u." for Csíkvári út) or initials
-// ("Wesselényi M. u." for Wesselényi Miklós utca), which OpenStreetMap does not match.
-// So every search is tried a second time with only the name: "Csíkvári", "Wesselényi".
+// ("Wesselényi M. u." for Wesselényi Miklós utca, "Dózsa Gy. út"), which OpenStreetMap does not match.
+// So every search is tried a second time with only the name: "Csíkvári", "Wesselényi", "Dózsa".
 const looseStreetName = (street) =>
     street
         .split(" ")
-        .filter((token) => !STREET_TYPES.has(token.toLowerCase()) && !/^\p{Lu}\.$/u.test(token))
+        .filter((token) => !STREET_TYPES.has(token.toLowerCase()) && !/^\p{Lu}\p{Ll}?\.$/u.test(token)) // "M.", "Gy."
         .join(" ")
 
 const buildQueries = ({ address, city }) => {
@@ -119,8 +137,8 @@ const pending = new Map() // the same address requested twice at once is looked 
 // club: { address, zipCode, city } -> { lat, lng, precision: "address" | "street" | "city" } or null
 const geocodeClub = async (club) => {
     const key = `${club.address}|${club.zipCode}|${club.city}`
-    const cache = await getCache()
-    if (cache.has(key)) return cache.get(key)
+    const cache = await readCache()
+    if (cache && Object.hasOwn(cache, key)) return cache[key]
     if (pending.has(key)) return pending.get(key)
 
     const lookup = (async () => {
@@ -132,8 +150,7 @@ const geocodeClub = async (club) => {
                 break
             }
         }
-        cache.set(key, location) // "not found" is cached too, so it is not asked again
-        await saveCache(cache)
+        await saveToCache(key, location) // "not found" is cached too, so it is not asked again
         return location
     })()
 
@@ -145,4 +162,4 @@ const geocodeClub = async (club) => {
     }
 }
 
-module.exports = { geocodeClub, parseAddress }
+module.exports = { geocodeClub, parseAddress, buildQueries }

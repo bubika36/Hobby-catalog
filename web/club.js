@@ -76,13 +76,7 @@ const createPrices = (price) => {
 const createClubLogo = (club) => {
   const logo = createElement("div", "club-detail-logo", club.name.trim().charAt(0).toUpperCase());
   logo.setAttribute("aria-hidden", "true");
-  if (club.logoURL) {
-    const image = createElement("img");
-    image.alt = "";
-    image.src = club.logoURL;
-    image.addEventListener("error", () => image.remove());
-    logo.append(image);
-  }
+  if (club.logoURL) logo.append(createClubLogoImage(club.logoURL));
   return logo;
 };
 
@@ -121,14 +115,17 @@ const MAP_ZOOM = { address: 15, street: 14, city: 12 };
 // Leaflet map with OpenStreetMap tiles. The backend turns the club's address into
 // coordinates (GET /api/clubs/:id/location -> { lat, lng, precision }).
 // Until then, or if that fails, #map stays empty and shows the CSS placeholder.
+// Errors are thrown; the caller then sets data-state="error".
 const showClubOnMap = async (club) => {
-  if (typeof L === "undefined") return;
+  if (typeof L === "undefined") throw new Error("Leaflet did not load");
 
   const response = await fetch(`/api/clubs/${club.id}/location`);
-  if (!response.ok) {
+  // 404: the address is not on the map. Anything else may work later, so it is shown as an error.
+  if (response.status === 404) {
     clubMap.dataset.state = "unavailable"; // changes the placeholder's text
     return;
   }
+  if (!response.ok) throw new Error(`Failed to load the club's location (HTTP ${response.status})`);
   const { lat, lng, precision } = await response.json();
 
   // No scroll-wheel zoom, so scrolling the page over the map still scrolls the page.
@@ -148,17 +145,23 @@ const showClubOnMap = async (club) => {
 
 // club.html holds the back link and the layout with the map card;
 // this adds the club's header and the other detail cards around them.
+// Replaces the detail layout with a heading and a line of text ("not found", load error).
+const showPageMessage = (titleText, text) => {
+  const title = createElement("h2", "", titleText);
+  title.id = "club-title";
+  const heading = createElement("div", "section-heading");
+  heading.append(title);
+  clubPage.querySelector(".club-detail-layout").replaceWith(heading, createElement("p", "club-detail-text", text));
+  document.title = `${titleText} – ${SITE_TITLE}`;
+};
+
 const renderClubPage = (club) => {
   const layout = clubPage.querySelector(".club-detail-layout");
 
   if (!club) {
-    const title = createElement("h2", "", "A klub nem található");
-    title.id = "club-title";
-    const heading = createElement("div", "section-heading");
-    heading.append(title);
-    layout.replaceWith(
-      heading,
-      createElement("p", "club-detail-text", "Lehet, hogy hibás a link, vagy a klub már nem szerepel a katalógusban."),
+    showPageMessage(
+      "A klub nem található",
+      "Lehet, hogy hibás a link, vagy a klub már nem szerepel a katalógusban.",
     );
     return;
   }
@@ -186,7 +189,7 @@ const renderClubPage = (club) => {
   layout.before(createClubHeader(club));
   showClubOnMap(club).catch((error) => {
     console.error(error);
-    clubMap.dataset.state = "unavailable";
+    clubMap.dataset.state = "error";
   });
 };
 
@@ -215,11 +218,15 @@ const clubId = Number(new URLSearchParams(window.location.search).get("id"));
 setUpBackLink();
 
 // The page renders once the clubs and categories (for the header's path) have loaded.
-// If loading fails, the page shows "not found".
-loadCatalog()
-  .catch((error) => console.error(error))
-  .finally(() => {
+// If loading fails, it shows a load error, not "not found".
+loadCatalog().then(
+  () => {
     const club = clubById.get(clubId);
     renderClubPage(club);
-    document.title = `${club ? club.name : "A klub nem található"} – ${SITE_TITLE}`;
-  });
+    if (club) document.title = `${club.name} – ${SITE_TITLE}`;
+  },
+  (error) => {
+    console.error(error);
+    showPageMessage("Nem sikerült betölteni a klubot", "Hiba történt az adatok betöltésekor. Próbáld újra később.");
+  },
+);

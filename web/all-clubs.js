@@ -46,15 +46,8 @@ const createClubPlaceholder = (club, category) => {
   // The club's logo over the grey box, which shows when there is no logo or it fails to load.
   const image = createElement("div", "club-placeholder-image");
   image.setAttribute("aria-hidden", "true");
-  if (club.logoURL) {
-    const logo = createElement("img");
-    logo.alt = "";
-    logo.loading = "lazy"; // 100+ cards, so only load the ones scrolled into view
-    logo.referrerPolicy = "no-referrer"; // some club sites block images linked from other sites
-    logo.src = club.logoURL;
-    logo.addEventListener("error", () => logo.remove());
-    image.append(logo);
-  }
+  // lazy: 100+ cards, so only load the ones scrolled into view
+  if (club.logoURL) image.append(createClubLogoImage(club.logoURL, "lazy"));
 
   const line = createElement("span", "skeleton-line");
   line.setAttribute("aria-hidden", "true");

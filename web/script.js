@@ -196,3 +196,15 @@ const createElement = (tag, className, text) => {
   if (text !== undefined) element.textContent = text;
   return element;
 };
+
+// A club's logo for the list cards and the club page. It removes itself if it fails to load,
+// so the box behind it (grey box, first letter) shows instead.
+const createClubLogoImage = (url, loading = "eager") => {
+  const image = createElement("img");
+  image.alt = "";
+  image.loading = loading;
+  image.referrerPolicy = "no-referrer"; // some club sites block images linked from other sites
+  image.src = url; // set last, so the two settings above apply to this request
+  image.addEventListener("error", () => image.remove());
+  return image;
+};

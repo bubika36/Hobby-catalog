@@ -4,6 +4,8 @@
 -- ============================================================
 
 USE hobby_catalog;
+-- the file has accented text; a client defaulting to latin1 would garble it
+SET NAMES utf8mb4;
 
 -- ============================================================
 -- USERS

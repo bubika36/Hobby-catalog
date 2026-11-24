@@ -32,7 +32,8 @@ module.exports = {
             `)
         return rows
     },
-    // One row per club that has at least one category, with its price and all of its categories.
+    // One row per club, with its price and all of its categories (none yet: categoryIds is []).
+    // One row is guaranteed: price.clubs_clubId is UNIQUE (hobby_catalog_create.sql).
     allClubs: async () => {
         const [rows] = await kapcsolat.query(`
             SELECT c.clubId AS id, c.name, c.description, c.email, c.phone,
@@ -41,7 +42,7 @@ module.exports = {
                    p.adult, p.student,
                    cc.categoryIds
             FROM clubs c
-            JOIN (
+            LEFT JOIN (
                 -- every category of a club in one column, e.g. "21,33,35"
                 SELECT clubs_clubId, GROUP_CONCAT(categories_categoryId ORDER BY categories_categoryId) AS categoryIds
                 FROM clubCategories
@@ -54,7 +55,7 @@ module.exports = {
         return rows.map(({ rating, adult, student, categoryIds, ...club }) => ({
             ...club,
             rating: Number(rating),
-            categoryIds: categoryIds.split(",").map(Number),
+            categoryIds: categoryIds ? categoryIds.split(",").map(Number) : [],
             price: { adult, student },
         }))
     },

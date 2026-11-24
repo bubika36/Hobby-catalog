@@ -1177,6 +1177,11 @@ h1 {
   content: "A cím nem található a térképen";
 }
 
+/* club.js sets this when the map or the location failed to load (may work on reload) */
+.club-map[data-state="error"]:empty::before {
+  content: "A térkép most nem tölthető be";
+}
+
 @media (max-width: 900px) {
   .club-detail-layout {
     grid-template-columns: minmax(0, 1fr);

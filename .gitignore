@@ -4,3 +4,4 @@ node_modules/
 CLAUDE.md
 .claude/
 graphify-out/
+geocode-cache.json.tmp
